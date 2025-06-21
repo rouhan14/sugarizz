@@ -34,8 +34,10 @@ export default function CookieHero({
 
     return (
         <section
-            className="relative flex items-center justify-center w-full max-w-6xl mx-auto px-4 py-6 md:py-8 transition-colors duration-300 rounded-2xl overflow-visible"
-            style={{ backgroundColor: hovered && isDesktop ? bgColor : "#242833" }}
+            className={`relative flex items-center justify-center w-full max-w-6xl mx-auto px-4 py-3 md:py-1 transition-colors duration-300 rounded-2xl overflow-visible ${
+                hovered && isDesktop ? "shadow-2xl" : ""
+            }`}
+            style={{ backgroundColor: hovered && isDesktop ? bgColor : "" }}
             onMouseEnter={() => isDesktop && setHovered(true)}
             onMouseLeave={() => isDesktop && setHovered(false)}
         >
