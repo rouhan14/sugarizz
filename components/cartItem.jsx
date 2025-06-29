@@ -31,11 +31,39 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             </div>
 
             {/* Buttons made by me using shadcn */}
-            <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2">
-                <Button variant="outline" onClick={() => decrease(title)}><FaMinus /></Button>
-                <span>{quantity}</span>
-                <Button onClick={() => increase(title)}><FaPlus /></Button>
+            <div className="mt-5 flex gap-4 justify-center md:justify-start">
+                <div className="relative min-w-[120px]">
+                    <div className="transition-all duration-300 ease-in-out">
+                        {quantity === 0 ? (
+                            <Button
+                                onClick={() => increase(title)}
+                                className="w-full transition-all duration-300"
+                            >
+                                Order Now
+                            </Button>
+                        ) : (
+                            <div className="flex items-center gap-4 bg-white rounded-lg shadow-md border border-black transition-all duration-300">
+                                <button
+                                    onClick={() => decrease(title)}
+                                    className="text-base p-4 rounded-l-lg hover:bg-gray-100 transition"
+                                    style={{ lineHeight: 0 }}
+                                >
+                                    <FaMinus size={14} />
+                                </button>
+                                <span className="font-semibold w-4 text-center">{quantity}</span>
+                                <button
+                                    onClick={() => increase(title)}
+                                    className="text-base p-4 rounded-r-lg hover:bg-gray-100 transition"
+                                    style={{ lineHeight: 0 }}
+                                >
+                                    <FaPlus size={14} />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
+
             {/* Total Price */}
             <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2">
                 <div>Total:</div>

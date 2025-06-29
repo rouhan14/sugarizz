@@ -21,28 +21,28 @@ export function Navbar() {
     return (
         <nav className="w-full shadow-sm px-4 py-2 bg-[#242833] text-white sticky top-0 z-50">
 
-            <div className=" flex items-center justify-between w-[80%] mx-auto">
+            <div className=" flex justify-between w-[80%] mx-auto">
 
             
 
                 {/* Creating separate links for each */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <Link href="/" className="text-sm font-medium hover:text-primary">
+                    <Link href="/" className="text-sm font-medium hover:underline">
                         HOME
                     </Link>
-                    <Link href="/about" className="text-sm font-medium hover:text-primary">
+                    <Link href="/about" className="text-sm font-medium hover:underline">
                         COOKIES
                     </Link>
                     <Link
                         href="/contact"
-                        className="text-sm font-medium hover:text-primary"
+                        className="text-sm font-medium hover:underline"
                     >
                         CONTACT
                     </Link>
                 </div>
 
                 {/* Logo here */}
-                <div>
+                <div className="pe-35">
                     <Link href="/" className="text-xl font-bold">
                         <Image src="/logo3.png" alt="Logo" width={130} height={300} />
                     </Link>
@@ -52,10 +52,10 @@ export function Navbar() {
 
                 {/* create buttons for profile and checkout */}
                 <div className="hidden md:flex items-center space-x-4">
-                    <Link href="/cart" className="text-sm font-medium hover:text-primary">
+                    <Link href="/cart" className="text-sm font-medium inline-block border-b-1 border-transparent hover:border-white transition">
                         <IoPersonOutline size={25} />
                     </Link>
-                    <Link href="/cart" className="text-sm font-medium hover:text-primary">
+                    <Link href="/cart" className="text-sm font-medium inline-block border-b-1 border-transparent hover:border-white transition">
                         <FiShoppingCart size={25} />
                     </Link>
                 </div>

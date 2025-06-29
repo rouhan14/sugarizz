@@ -102,7 +102,7 @@ export default function CookieHero({
                         {quantity > 0 && (
                             <button
                                 onClick={() => decrease(title, true)}
-                                className="text-gray-500 hover:text-red-600 transition-all duration-200 p-2"
+                                className=" text-gray-500 hover:text-red-600 transition-all duration-200 p-2 cursor-pointer"
                                 title="Remove"
                             >
                                 <FaTrash size={16} />
