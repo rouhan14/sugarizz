@@ -20,7 +20,7 @@ export function Navbar() {
     const pathname = usePathname(); // ✅ Get current route
 
     return (
-        <nav className="w-full shadow-sm px-4 py-2 bg-[#242833] text-white sticky top-0 z-50">
+        <nav className="w-full shadow-sm px-4 py-2 bg-[#242833] text-white sticky top-0 z-50000">
             <div className="flex justify-between w-[80%] mx-auto">
                 
                 {/* Desktop Nav Links */}

@@ -3,17 +3,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import L from "leaflet";
-
-// Lazy-load leaflet components to avoid SSR issues
-const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
-const Circle = dynamic(() => import("react-leaflet").then(mod => mod.Circle), { ssr: false });
 
 // Store location: Lahore
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
 const DELIVERY_RADIUS_KM = 12;
+
+// Dynamic import with no SSR and proper loading
+const Map = dynamic(() => import('../../components/mapComponent'), { 
+  ssr: false,
+  loading: () => <div className="h-[300px] w-full bg-gray-200 flex items-center justify-center">Loading map...</div>
+});
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const toRad = val => (val * Math.PI) / 180;
@@ -34,9 +33,9 @@ const Checkout = () => {
   const [resolvedAddress, setResolvedAddress] = useState("");
   const [error, setError] = useState("");
   const [isWithinRange, setIsWithinRange] = useState(true);
+  const [mapKey, setMapKey] = useState(0); // Force re-render when needed
 
   const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-  const markerRef = useRef();
 
   // Geocode user-inputted address
   const handleGeocodeAddress = async () => {
@@ -57,6 +56,7 @@ const Checkout = () => {
         setMarkerPos({ lat, lng });
         setMapCenter({ lat, lng });
         setResolvedAddress(results[0].formatted_address);
+        setMapKey(prev => prev + 1); // Force map re-render
 
         const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
         if (distance > DELIVERY_RADIUS_KM) {
@@ -139,24 +139,14 @@ const Checkout = () => {
         </div>
 
         {/* Map Display */}
-        <div>
-          <MapContainer
+        <div className="h-[300px] w-full border border-gray-300 rounded-md overflow-hidden">
+          <Map 
+            key={mapKey}
             center={mapCenter}
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ height: "300px", width: "100%" }}
-          >
-            <TileLayer
-              attribution='&copy; OpenStreetMap contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={markerPos} ref={markerRef} />
-            <Circle
-              center={STORE_LOCATION}
-              radius={DELIVERY_RADIUS_KM * 1000}
-              pathOptions={{ fillColor: "green", fillOpacity: 0.2, color: "green" }}
-            />
-          </MapContainer>
+            markerPos={markerPos}
+            storeLocation={STORE_LOCATION}
+            deliveryRadius={DELIVERY_RADIUS_KM}
+          />
         </div>
 
         {/* Notes */}
