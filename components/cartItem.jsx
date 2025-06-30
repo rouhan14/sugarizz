@@ -31,7 +31,7 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             </div>
 
             {/* Buttons made by me using shadcn */}
-            <div className="mt-5 flex gap-4 justify-center md:justify-start">
+            <div className="mt-5 flex gap-4 justify-center md:justify-start ">
                 <div className="relative min-w-[120px]">
                     <div className="transition-all duration-300 ease-in-out">
                         {quantity === 0 ? (

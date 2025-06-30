@@ -44,34 +44,42 @@ export function Navbar() {
                 </div>
 
                 {/* Logo */}
-                <div className="pe-35">
-                    <Link href="/" className="text-xl font-bold">
-                        <Image src="/logo3.png" alt="Logo" width={130} height={300} />
-                    </Link>
+                            <div className="flex justify-center items-center w-full px-13 pe-8 sm:pe-16">
+                <Link href="/" className="text-xl font-bold">
+                    <Image
+                    src="/logo3.png"
+                    alt="Logo"
+                    width={130}
+                    height={300}
+                    className="w-28 sm:w-32 object-contain"
+                    priority
+                    />
+                </Link>
                 </div>
 
+
                 {/* Profile & Cart Icons */}
-                    <div className="hidden md:flex items-center space-x-4">
-        {[
-            { href: "/profile", icon: <IoPersonOutline size={25} /> },
-            { href: "/cart", icon: <FiShoppingCart size={25} /> },
-        ].map(({ href, icon }) => {
-            const isActive = pathname === href;
-            return (
-                <Link
-                    key={href}
-                    href={href}
-                    className={`text-sm font-medium p-2 border rounded-md transition ${
-                        isActive
-                            ? "bg-white text-black border-white"
-                            : "text-white border-white hover:bg-white hover:text-black"
-                    }`}
-                >
-                    {icon}
-                </Link>
-            );
-        })}
-    </div>
+                <div className="hidden md:flex items-center space-x-4">
+    {[
+        { href: "/profile", icon: <IoPersonOutline size={25} /> },
+        { href: "/cart", icon: <FiShoppingCart size={25} /> },
+    ].map(({ href, icon }) => {
+        const isActive = pathname === href;
+        return (
+            <Link
+                key={href}
+                href={href}
+                className={`text-sm font-medium p-2 border rounded-md transition ${
+                    isActive
+                        ? "bg-white text-black border-white"
+                        : "text-white border-white hover:bg-white hover:text-black"
+                }`}
+            >
+                {icon}
+            </Link>
+        );
+    })}
+</div>
 
 
                 {/* Mobile Menu */}
