@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // ✅ NEW
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -10,58 +11,70 @@ import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
 
 const navItems = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/", label: "HOME" },
+    { href: "/contact", label: "CONTACT" },
 ];
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname(); // ✅ Get current route
 
     return (
         <nav className="w-full shadow-sm px-4 py-2 bg-[#242833] text-white sticky top-0 z-50">
-
-            <div className=" flex justify-between w-[80%] mx-auto">
-
-            
-
-                {/* Creating separate links for each */}
+            <div className="flex justify-between w-[80%] mx-auto">
+                
+                {/* Desktop Nav Links */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <Link href="/" className="text-sm font-medium hover:underline">
-                        HOME
-                    </Link>
-                    <Link href="/about" className="text-sm font-medium hover:underline">
-                        COOKIES
-                    </Link>
-                    <Link
-                        href="/contact"
-                        className="text-sm font-medium hover:underline"
-                    >
-                        CONTACT
-                    </Link>
+                    {navItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`text-sm font-medium p-2 border rounded-md transition
+                                    ${isActive
+                                        ? "bg-white text-black border-white"
+                                        : "text-white border-white hover:bg-white hover:text-black"
+                                    }`}
+                            >
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </div>
 
-                {/* Logo here */}
+                {/* Logo */}
                 <div className="pe-35">
                     <Link href="/" className="text-xl font-bold">
                         <Image src="/logo3.png" alt="Logo" width={130} height={300} />
                     </Link>
-
                 </div>
 
+                {/* Profile & Cart Icons */}
+                    <div className="hidden md:flex items-center space-x-4">
+        {[
+            { href: "/profile", icon: <IoPersonOutline size={25} /> },
+            { href: "/cart", icon: <FiShoppingCart size={25} /> },
+        ].map(({ href, icon }) => {
+            const isActive = pathname === href;
+            return (
+                <Link
+                    key={href}
+                    href={href}
+                    className={`text-sm font-medium p-2 border rounded-md transition ${
+                        isActive
+                            ? "bg-white text-black border-white"
+                            : "text-white border-white hover:bg-white hover:text-black"
+                    }`}
+                >
+                    {icon}
+                </Link>
+            );
+        })}
+    </div>
 
-                {/* create buttons for profile and checkout */}
-                <div className="hidden md:flex items-center space-x-4">
-                    <Link href="/cart" className="text-sm font-medium inline-block border-b-1 border-transparent hover:border-white transition">
-                        <IoPersonOutline size={25} />
-                    </Link>
-                    <Link href="/cart" className="text-sm font-medium inline-block border-b-1 border-transparent hover:border-white transition">
-                        <FiShoppingCart size={25} />
-                    </Link>
-                </div>
 
-
-                {/* Mobile */}
+                {/* Mobile Menu */}
                 <div className="md:hidden BG-[#242833] text-white">
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
@@ -71,20 +84,27 @@ export function Navbar() {
                         </SheetTrigger>
                         <SheetContent side="right" className="p-6 bg-[#242833] text-white">
                             <div className="flex flex-col gap-4 mt-10">
-                                <Link href="/" className="text-sm font-medium hover:text-primary">
-                                    Home
-                                </Link>
-                                <Link href="/about" className="text-sm font-medium hover:text-primary">
-                                    About
-                                </Link>
-                                <Link href="/contact" className="text-sm font-medium hover:text-primary">
-                                    Contact
-                                </Link>
+                                {navItems.map((item) => {
+                                    const isActive = pathname === item.href;
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            className={`text-sm font-medium px-3 py-2 rounded-md transition ${
+                                                isActive
+                                                    ? "bg-white text-black"
+                                                    : "hover:text-primary"
+                                            }`}
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </SheetContent>
                     </Sheet>
                 </div>
-
             </div>
         </nav>
     );

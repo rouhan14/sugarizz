@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import useCookieStore from "@/store/cookieStore";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 
-
 export default function CookieHero({
     title,
     description,
@@ -16,7 +15,6 @@ export default function CookieHero({
     flip,
 }) {
     const [hovered, setHovered] = useState(false);
-
     const [isDesktop, setIsDesktop] = useState(false);
 
     const { quantities, increase, decrease } = useCookieStore();
@@ -49,7 +47,7 @@ export default function CookieHero({
                         src={image}
                         alt={`Image of ${title}`}
                         fill
-                        className={`object-contain ${flip ? "rotate-[-25deg]" : "rotate-[25deg]"}`}
+                        className={`object-contain ${flip ? "md:-rotate-12" : "md:rotate-12"}`}
                         priority
                     />
                 </div>
@@ -102,7 +100,7 @@ export default function CookieHero({
                         {quantity > 0 && (
                             <button
                                 onClick={() => decrease(title, true)}
-                                className=" text-gray-500 hover:text-red-600 transition-all duration-200 p-2 cursor-pointer"
+                                className="text-gray-500 hover:text-red-600 transition-all duration-200 p-2 cursor-pointer"
                                 title="Remove"
                             >
                                 <FaTrash size={16} />
