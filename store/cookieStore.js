@@ -33,6 +33,8 @@ const useCookieStore = create(
           };
         }),
 
+      resetQuantities: () => set({ quantities: {} }),
+
     }),
     {
       name: 'cookie-store', // key in localStorage
