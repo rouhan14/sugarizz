@@ -21,18 +21,18 @@ const data = [
         bgColor: "#FFB6C1"
     },
     {
-        title: "Hazelnut Cookie",
+        title: "HazelNut Chocolate Cookie",
         description: "A crunchy, nutty cookie with a delightful hazelnut flavor, perfect for a snack or dessert.",
         price: 350,
         image: "/chocolatechip.png",
-        bgColor: "#D2B48C"
+        bgColor: "#D4DE95"
     },
     {
         title: "Double Chocolate Cookie",
         description: "For the chocolate lovers, this cookie is a rich, fudgy treat with chocolate chunks in every bite.",
         price: 350,
         image: "/doublechocolate.png",
-        bgColor: "#8B4513"
+        bgColor: "#87CEEB"
     },
     {
         title: "Choco Walnut Cookie",
