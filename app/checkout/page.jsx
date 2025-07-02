@@ -10,10 +10,11 @@ import LocationService from "@/components/locationService";
 import AddressForm from "@/components/addressForm";
 import OrderSummary from "@/components/orderSummary";
 import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
+import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
 
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
-const DELIVERY_RADIUS_KM = 12;
+const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
 
 // Lazy-load map component
 const Map = dynamic(() => import('../../components/mapComponent'), {
@@ -32,11 +33,10 @@ const Checkout = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [locationFetchedViaGPS, setLocationFetchedViaGPS] = useState(false);
 
-
   // Map states
   const [markerPos, setMarkerPos] = useState(STORE_LOCATION);
   const [mapCenter, setMapCenter] = useState(STORE_LOCATION);
-  const [isWithinRange, setIsWithinRange] = useState(true);
+  const [deliveryDetails, setDeliveryDetails] = useState(null);
   const [mapKey, setMapKey] = useState(0);
 
   // Modal states
@@ -64,8 +64,9 @@ const Checkout = () => {
     });
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const deliveryCharges = isWithinRange ? 150 : 0;
+  const deliveryCharges = deliveryDetails ? deliveryDetails.charge : 0;
   const total = subtotal + deliveryCharges;
+  const isWithinRange = deliveryDetails !== null;
 
   const showErrorModal = (title, message) => {
     setModalTitle(title);
@@ -84,14 +85,16 @@ const Checkout = () => {
     }
 
     const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
-    if (distance > DELIVERY_RADIUS_KM) {
-      setIsWithinRange(false);
+    const zoneDetails = getDeliveryDetails(distance);
+    
+    if (!zoneDetails) {
+      setDeliveryDetails(null);
       showErrorModal(
         "Out of Delivery Zone",
-        `This location is ${distance.toFixed(2)} km away. We only deliver within ${DELIVERY_RADIUS_KM} km of our store.`
+        `This location is ${distance.toFixed(2)} km away. We only deliver within ${MAX_DELIVERY_DISTANCE} km of our store.`
       );
     } else {
-      setIsWithinRange(true);
+      setDeliveryDetails(zoneDetails);
     }
   };
 
@@ -154,6 +157,24 @@ const Checkout = () => {
     reverseGeocode(lat, lng);
   };
 
+  const getDeliveryZoneName = () => {
+    if (!deliveryDetails) return "Outside Delivery Zone";
+    
+    const distance = calculateDistance(
+      STORE_LOCATION.lat, 
+      STORE_LOCATION.lng, 
+      currentLocation?.lat || markerPos.lat, 
+      currentLocation?.lng || markerPos.lng
+    );
+    
+    if (distance <= 5) return "Zone A";
+    if (distance <= 8) return "Zone B";
+    if (distance <= 14) return "Zone C";
+    if (distance <= 17) return "Zone D";
+    if (distance <= 20) return "Zone E";
+    return "Outside Delivery Zone";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -178,9 +199,10 @@ const Checkout = () => {
       resolvedAddress, // Second address - resolved/location based
       coordinates: currentLocation || markerPos,
       cookies: cartItems,
-      deliveryZone: "Zone A",
+      deliveryZone: getDeliveryZoneName(),
       deliveryCharges,
       totalPrice: total,
+      estimatedDeliveryTime: deliveryDetails?.eta || "N/A",
       additionalRecommendations: formData.get("recommendations"),
     };
 
@@ -280,14 +302,6 @@ const Checkout = () => {
             />
 
             {/* Address Form */}
-            {/* <AddressForm
-              userInputAddress={userInputAddress}
-              setUserInputAddress={setUserInputAddress}
-              resolvedAddress={resolvedAddress}
-              onGeocodeAddress={handleGeocodeUserAddress}
-              isProcessing={isProcessing}
-            /> */}
-
             <AddressForm
               userInputAddress={userInputAddress}
               setUserInputAddress={setUserInputAddress}
@@ -297,6 +311,17 @@ const Checkout = () => {
               isLocationFromGPS={locationFetchedViaGPS}
             />
 
+            {/* Delivery Zone Info */}
+            {deliveryDetails && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                <h3 className="font-medium text-green-800 mb-2">Delivery Information</h3>
+                <div className="text-sm text-green-700 space-y-1">
+                  <p><strong>Zone:</strong> {getDeliveryZoneName()}</p>
+                  <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
+                  <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
+                </div>
+              </div>
+            )}
 
             {/* Map */}
             {/* <div className="space-y-2">
@@ -307,7 +332,7 @@ const Checkout = () => {
                   center={mapCenter}
                   markerPos={markerPos}
                   storeLocation={STORE_LOCATION}
-                  deliveryRadius={DELIVERY_RADIUS_KM}
+                  deliveryRadius={MAX_DELIVERY_DISTANCE}
                   onMarkerDrag={handleMapMarkerDrag}
                   draggable={true}
                 />
@@ -348,6 +373,7 @@ const Checkout = () => {
           deliveryCharges={deliveryCharges}
           total={total}
           isWithinRange={isWithinRange}
+          deliveryDetails={deliveryDetails}
         />
       </div>
     </div>
