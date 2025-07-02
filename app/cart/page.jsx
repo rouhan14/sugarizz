@@ -6,8 +6,6 @@ import useCookieStore from "@/store/cookieStore";
 import data from "@/data";
 import Link from "next/link";
 
-const DELIVERY_CHARGES = 300
-
 export default function Cart() {
   const [hydrated, setHydrated] = useState(false);
   const quantities = useCookieStore((state) => state.quantities);
@@ -56,14 +54,10 @@ export default function Cart() {
             <span>Total Items:</span>
             <span>{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>
           </div>
-          <div className="flex justify-between mb-2">
-            <span>Delivery Charges:</span>
-            <span>{DELIVERY_CHARGES}</span>
-          </div>
           <div className="flex justify-between mb-2">            
             <span>Total Price:</span>
             <span>
-              {DELIVERY_CHARGES + cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+              {cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
             </span>
           </div>
         </div>
