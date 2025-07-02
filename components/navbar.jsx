@@ -49,7 +49,7 @@ export function Navbar() {
                 </div>
 
                 {/* Logo - Centered */}
-                <div className="flex justify-center items-center flex-1">
+                <div className="flex justify-center items-center flex-1 ml-8 sm:ml-0">
                     <Link href="/" className="text-xl font-bold">
                         <Image
                             src="/logo3.png"
