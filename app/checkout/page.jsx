@@ -11,8 +11,9 @@ import AddressForm from "@/components/addressForm";
 import OrderSummary from "@/components/orderSummary";
 import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
 
-const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
-const DELIVERY_RADIUS_KM = 12;
+// Constants
+const STORE_LOCATION = { lat: 31.3780, lng: 74.2544 };
+const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
 
 const Map = dynamic(() => import('../../components/mapComponent'), {
   ssr: false,

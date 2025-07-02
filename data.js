@@ -10,7 +10,7 @@ const data = [
         title: "Classic Chocolate Cookie",
         description: "Indulge in the perfect blend of crisp, golden-brown cookie goodness and a rich, gooey chocolate-filled center! Our Classic Chocolate-Filled Cookie is handcrafted with premium ingredients to give you the ultimate melt-in-your-mouth experience.",
         price: 350,
-        image: "/chocolatechip.png",
+        image: "/classicchocolate.png",
         bgColor: "#FFD59A"
     },
     {
@@ -24,7 +24,7 @@ const data = [
         title: "HazelNut Chocolate Cookie",
         description: "A crunchy, nutty cookie with a delightful hazelnut flavor, perfect for a snack or dessert.",
         price: 350,
-        image: "/chocolatechip.png",
+        image: "/hazelnut.png",
         bgColor: "#D4DE95"
     },
     {
