@@ -50,11 +50,11 @@ export default function Cart() {
       {cartItems.length > 0 && (
         <div className="mt-8 p-4 bg-white rounded-lg shadow-md w-full max-w-4xl">
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-          <div className="flex justify-between mb-2">
+          <div className="flex justify-between mb-2 font-bold">
             <span>Total Items:</span>
             <span>{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>
           </div>
-          <div className="flex justify-between mb-2">            
+          <div className="flex justify-between mb-2 font-bold">            
             <span>Total Price:</span>
             <span>
               {cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
@@ -65,7 +65,7 @@ export default function Cart() {
 
       {/* Checkout Button */}
       {cartItems.length > 0 && (
-        <Link href="/checkout" className="w-full max-w-4xl text-center mt-6 px-6 py-3 bg-[#0FFF50] text-white rounded-lg hover:bg-[#285b35] transition-colors cursor-pointer">
+        <Link href="/checkout" className="w-full max-w-4xl text-center mt-6 px-6 py-3 bg-[#0FFF50] rounded-lg hover:bg-[#285b35] transition-colors cursor-pointer text-black font-bold text-xl">
           Checkout
         </Link>
       )}
