@@ -29,6 +29,7 @@ export default function Cart() {
     });
 
   return (
+  
     <div className="flex flex-col items-center py-8 px-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-white">Your Cart</h1>
       {cartItems.length === 0 ? (

@@ -44,7 +44,7 @@ export function Navbar() {
                 </div>
 
                 {/* Logo */}
-                            <div className="flex justify-center items-center w-full px-13 pe-8 sm:pe-16">
+                            <div className="flex justify-center items-center w-full px-17 pe-8 sm:pe-40">
                 <Link href="/" className="text-xl font-bold">
                     <Image
                     src="/logo3.png"
@@ -61,7 +61,7 @@ export function Navbar() {
                 {/* Profile & Cart Icons */}
                 <div className="hidden md:flex items-center space-x-4">
     {[
-        { href: "/profile", icon: <IoPersonOutline size={25} /> },
+        
         { href: "/cart", icon: <FiShoppingCart size={25} /> },
     ].map(({ href, icon }) => {
         const isActive = pathname === href;

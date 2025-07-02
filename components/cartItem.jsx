@@ -12,7 +12,7 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
 
     return (
         <div
-            className="flex items-center justify-between p-4 rounded-2xl w-full max-w-4xl mx-auto my-4"
+            className="flex items-center justify-between p-4 rounded-2xl w-full max-w-4xl mx-auto my-4 sm:flex-row flex-col"
             style={{ backgroundColor: bgColor }}
         >
             <div className="flex items-center gap-4">
@@ -25,13 +25,13 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             </div>
 
             {/* Price per cookie */}
-            <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2">
-                <div>Price:</div>
-                <div>{price}</div>
-            </div>
-
-            {/* Buttons made by me using shadcn */}
-            <div className="mt-5 flex gap-4 justify-center md:justify-start ">
+            <div className="flex gap-5">
+                <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2 border border-black shadow">
+                    <div>Price:</div>
+                    <div>{price}</div>
+                </div>
+                {/* Buttons made by me using shadcn */}
+            <div className="mt-5 flex gap-4 justify-center md:justify-start  ">
                 <div className="relative min-w-[120px]">
                     <div className="transition-all duration-300 ease-in-out">
                         {quantity === 0 ? (
@@ -63,14 +63,14 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
                     </div>
                 </div>
             </div>
+            </div>
 
             {/* Total Price */}
-            <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2">
+            <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2 border border-black shadow">
+            
                 <div>Total:</div>
                 <div>{(price * quantity)}</div>
             </div>
-
-
         </div>
     );
 }
