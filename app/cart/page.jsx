@@ -65,7 +65,7 @@ export default function Cart() {
 
       {/* Checkout Button */}
       {cartItems.length > 0 && (
-        <Link href="/checkout" className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors cursor-pointer">
+        <Link href="/checkout" className="w-full max-w-4xl text-center mt-6 px-6 py-3 bg-[#0FFF50] text-white rounded-lg hover:bg-[#285b35] transition-colors cursor-pointer">
           Checkout
         </Link>
       )}
