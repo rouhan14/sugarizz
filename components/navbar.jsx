@@ -89,7 +89,7 @@ export function Navbar() {
                                 <Menu className="h-6 w-6" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="p-6 bg-[#242833] text-white">
+                        <SheetContent side="right" className="p-6 bg-[#242833] text-white z-99999 w-full max-w-xs">
                             <div className="flex flex-col gap-4 mt-10">
                                 {navItems.map((item) => {
                                     const isActive = pathname === item.href;
