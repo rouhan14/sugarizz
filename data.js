@@ -8,15 +8,15 @@ const data = [
     },
     {
         title: "Classic Chocolate Cookie",
-        description: "The classic, you can't go wrong. Thick, soft, and packed with milk chocolate chips.",
+        description: "Indulge in the perfect blend of crisp, golden-brown cookie goodness and a rich, gooey chocolate-filled center! Our Classic Chocolate-Filled Cookie is handcrafted with premium ingredients to give you the ultimate melt-in-your-mouth experience.",
         price: 350,
         image: "/chocolatechip.png",
         bgColor: "#FFD59A"
     },
     {
         title: "Peanut Butter Cookie",
-        description: "A rich, nutty delight with a perfect balance of sweetness and saltiness.",
-        price: 350,
+        description: "These moist and velvety cookies by Crumble are filled with cream cheese and huge chunks of white chocolate and are oven-baked daily as per your order.",
+        price: 450,
         image: "/peanutbutter.png",
         bgColor: "#FFB6C1"
     },
@@ -29,18 +29,25 @@ const data = [
     },
     {
         title: "Double Chocolate Cookie",
-        description: "For the chocolate lovers, this cookie is a rich, fudgy treat with chocolate chunks in every bite.",
+        description: "A chunky madness for true chocolate addicts! Filled with the rich aroma and taste of cocoa and bursting with chocolate chunks.",
         price: 350,
         image: "/doublechocolate.png",
         bgColor: "#87CEEB"
     },
     {
         title: "Choco Walnut Cookie",
-        description: "A classic cookie with a twist, featuring crunchy walnuts and gooey chocolate chips.",
-        price: 350,
+        description: "Delicious chocolate cookie blended to perfection with the thick nutty texture of roasted walnuts, what more can you ask for in a cookie?",
+        price: 450,
         image: "/walnut.png",
         bgColor: "#F5DEB3"
-    }
+    },
+    {
+        title: "Red Velvet Cookie",
+        description: "A rich, velvety red cookie baked to perfection and packed with creamy white chocolate chunks. Soft, sweet, and perfectly balanced, this one's a fan favorite for a reason.",
+        price: 350,
+        image: "/walnut.png",
+        bgColor: "#E9967A"
+    },
 ];
 
 export default data;
