@@ -53,18 +53,19 @@ export default function CookieHero({
                 </div>
 
                 {/* Text */}
+                
                 <div className="text-center md:text-left max-w-md">
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-white">
+                    <h1 className={`text-3xl md:text-4xl font-extrabold ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                         {title}
                     </h1>
-                    <p className="mt-3 md:mt-4 text-sm md:text-base text-white/80">
+                    <p className={`mt-3 md:mt-4 text-sm md:text-base ${hovered && isDesktop ? "text-black/80" : "text-white/80"}`}>
                         {description}
                     </p>
                     <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
-                        <h6 className="text-2xl md:text-2xl font-bold text-white">
+                        <h6 className={`text-2xl md:text-2xl font-bold ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                             {price}
                         </h6>
-                        <div className="text-white">PKR</div>
+                        <div className={`${hovered && isDesktop ? "text-black" : "text-white"}`}>PKR</div>
                     </div>
                     <div className="mt-5 flex gap-4 justify-center md:justify-start">
                         <div className="relative min-w-[120px]">
@@ -109,6 +110,8 @@ export default function CookieHero({
                     </div>
                 </div>
             </div>
+            
+            
         </section>
     );
 }

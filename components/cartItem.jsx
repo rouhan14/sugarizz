@@ -68,7 +68,7 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             
 
             {/* Total Price */}
-            <div className="ps-5">
+            <div className="ps-5 w-50">
             <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2 border border-black shadow">
             
                 <div>Total:</div>

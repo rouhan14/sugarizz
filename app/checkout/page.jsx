@@ -240,7 +240,7 @@ const Checkout = () => {
 
       <h1 className="text-3xl font-bold mb-6 text-center text-white">Checkout</h1>
 
-      <div className="max-w-6xl mx-auto p-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto p-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8 ">
         {/* LEFT - FORM */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -284,16 +284,6 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Payment Method */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-              <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
-                <label className="flex items-center gap-3">
-                  <input type="radio" name="payment" value="cod" checked readOnly className="w-4 h-4" />
-                  <span className="font-medium">Cash on Delivery</span>
-                </label>
-              </div>
-            </div>
 
             {/* Location Services */}
             <LocationService
