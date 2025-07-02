@@ -10,7 +10,7 @@ const data = [
         title: "Classic Chocolate Cookie",
         description: "The classic, you can't go wrong. Thick, soft, and packed with milk chocolate chips.",
         price: 350,
-        image: "/chocolatechip.png",
+        image: "/classicchocolate.png",
         bgColor: "#FFD59A"
     },
     {
@@ -24,7 +24,7 @@ const data = [
         title: "HazelNut Chocolate Cookie",
         description: "A crunchy, nutty cookie with a delightful hazelnut flavor, perfect for a snack or dessert.",
         price: 350,
-        image: "/chocolatechip.png",
+        image: "/hazelnut.png",
         bgColor: "#D4DE95"
     },
     {
