@@ -6,7 +6,9 @@ const OrderSummary = ({
   deliveryCharges, 
   total, 
   isWithinRange, 
-  deliveryDetails 
+  deliveryDetails,
+  meetsMinimumOrder,
+  minimumOrderAmount
 }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md h-fit">
@@ -40,7 +42,12 @@ const OrderSummary = ({
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-gray-600">
           <span>Subtotal:</span>
-          <span>Rs. {subtotal.toLocaleString()}</span>
+          <span className={meetsMinimumOrder ? 'text-gray-600' : 'text-orange-600'}>
+            Rs. {subtotal.toLocaleString()}
+            {!meetsMinimumOrder && (
+              <span className="text-xs ml-1">(Min: {minimumOrderAmount.toLocaleString()})</span>
+            )}
+          </span>
         </div>
         
         <div className="flex justify-between text-gray-600">
@@ -59,6 +66,15 @@ const OrderSummary = ({
       </div>
 
       {/* Delivery Status */}
+      {!meetsMinimumOrder && (
+        <div className="bg-orange-50 border border-orange-200 rounded-md p-3 mb-4">
+          <p className="text-orange-700 text-sm font-medium">⚠️ Minimum Order Required</p>
+          <p className="text-orange-600 text-xs mt-1">
+            Add Rs. {(minimumOrderAmount - subtotal).toLocaleString()} more to meet minimum order of Rs. {minimumOrderAmount.toLocaleString()}
+          </p>
+        </div>
+      )}
+
       {!isWithinRange && (
         <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
           <p className="text-red-700 text-sm font-medium">⚠️ Outside Delivery Zone</p>
@@ -68,9 +84,9 @@ const OrderSummary = ({
         </div>
       )}
 
-      {deliveryDetails && isWithinRange && (
+      {deliveryDetails && isWithinRange && meetsMinimumOrder && (
         <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
-          <p className="text-green-700 text-sm font-medium">✅ Delivery Available</p>
+          <p className="text-green-700 text-sm font-medium">✅ Ready to Order</p>
           <p className="text-green-600 text-xs mt-1">
             Your order will be delivered in {deliveryDetails.eta}
           </p>
@@ -81,14 +97,14 @@ const OrderSummary = ({
       <div className="border-t pt-4">
         <div className="flex justify-between items-center text-lg font-bold text-gray-800">
           <span>Total:</span>
-          <span className={isWithinRange ? 'text-gray-800' : 'text-gray-400'}>
-            Rs. {isWithinRange ? total.toLocaleString() : '---'}
+          <span className={isWithinRange && meetsMinimumOrder ? 'text-gray-800' : 'text-gray-400'}>
+            Rs. {isWithinRange && meetsMinimumOrder ? total.toLocaleString() : '---'}
           </span>
         </div>
       </div>
 
       {/* Zone Information */}
-      {isWithinRange && deliveryDetails && (
+      {isWithinRange && deliveryDetails && meetsMinimumOrder && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
           <h3 className="text-sm font-medium text-blue-800 mb-2">Delivery Zone Information</h3>
           <div className="text-xs text-blue-700 space-y-1">

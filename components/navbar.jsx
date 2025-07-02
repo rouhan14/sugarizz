@@ -20,14 +20,32 @@ export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
     const quantities = useCookieStore((state) => state.quantities);
-    
-    // Calculate total number of cookies
+
     const totalCookies = Object.values(quantities).reduce((sum, quantity) => sum + quantity, 0);
 
     return (
         <nav className="w-full shadow-sm px-4 py-2 bg-[#242833] text-white sticky top-0 z-50000">
             <div className="flex justify-between items-center w-[80%] mx-auto">
-                
+
+                {/* Mobile Cart Button - Far Left */}
+                <div className="md:hidden mr-2">
+                    <Link
+                        href="/cart"
+                        className={`relative flex items-center justify-center border border-white rounded-md p-2 transition duration-200 ${pathname === "/cart"
+                                ? "bg-white text-black"
+                                : "text-white hover:bg-white hover:text-black"
+                            }`}
+                    >
+                        <FiShoppingCart size={22} />
+                        {totalCookies > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center">
+                                {totalCookies}
+                            </span>
+                        )}
+                    </Link>
+                </div>
+
+
                 {/* Desktop Nav Links */}
                 <div className="hidden md:flex items-center space-x-6 flex-1">
                     {navItems.map((item) => {
@@ -49,7 +67,7 @@ export function Navbar() {
                 </div>
 
                 {/* Logo - Centered */}
-                <div className="flex justify-center items-center flex-1 ml-8 sm:ml-0">
+                <div className="flex justify-center items-center flex-1 ml-2 sm:ml-0">
                     <Link href="/" className="text-xl font-bold">
                         <Image
                             src="/logo3.png"
@@ -62,15 +80,14 @@ export function Navbar() {
                     </Link>
                 </div>
 
-                {/* Profile & Cart Icons */}
+                {/* Profile & Cart Icons - Desktop Only */}
                 <div className="hidden md:flex items-center space-x-4 flex-1 justify-end">
                     <Link
                         href="/cart"
-                        className={`text-sm font-medium p-2 border rounded-md transition relative ${
-                            pathname === "/cart"
+                        className={`text-sm font-medium p-2 border rounded-md transition relative ${pathname === "/cart"
                                 ? "bg-white text-black border-white"
                                 : "text-white border-white hover:bg-white hover:text-black"
-                        }`}
+                            }`}
                     >
                         <FiShoppingCart size={25} />
                         {totalCookies > 0 && (
@@ -81,7 +98,7 @@ export function Navbar() {
                     </Link>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Menu Button */}
                 <div className="md:hidden">
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
@@ -97,35 +114,16 @@ export function Navbar() {
                                         <Link
                                             key={item.href}
                                             href={item.href}
-                                            className={`text-sm font-medium px-3 py-2 rounded-md transition ${
-                                                isActive
+                                            className={`text-sm font-medium px-3 py-2 rounded-md transition ${isActive
                                                     ? "bg-white text-black"
                                                     : "hover:bg-gray-700"
-                                            }`}
+                                                }`}
                                             onClick={() => setIsOpen(false)}
                                         >
                                             {item.label}
                                         </Link>
                                     );
                                 })}
-                                
-                                {/* Cart link for mobile */}
-                                <Link
-                                    href="/cart"
-                                    className={`text-sm font-medium px-3 py-2 rounded-md transition flex items-center justify-between ${
-                                        pathname === "/cart"
-                                            ? "bg-white text-black"
-                                            : "hover:bg-gray-700"
-                                    }`}
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    <span>CART</span>
-                                    {totalCookies > 0 && (
-                                        <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                            {totalCookies}
-                                        </span>
-                                    )}
-                                </Link>
                             </div>
                         </SheetContent>
                     </Sheet>
