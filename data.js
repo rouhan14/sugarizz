@@ -14,13 +14,6 @@ const data = [
         bgColor: "#FFD59A"
     },
     {
-        title: "Peanut Butter Cookie",
-        description: "These moist and velvety cookies by Crumble are filled with cream cheese and huge chunks of white chocolate and are oven-baked daily as per your order.",
-        price: 450,
-        image: "/peanutbutter.png",
-        bgColor: "#FFB6C1"
-    },
-    {
         title: "HazelNut Chocolate Cookie",
         description: "A crunchy, nutty cookie with a delightful hazelnut flavor, perfect for a snack or dessert.",
         price: 350,
@@ -35,6 +28,13 @@ const data = [
         bgColor: "#87CEEB"
     },
     {
+        title: "Red Velvet Cookie",
+        description: "A rich, velvety red cookie baked to perfection and packed with creamy white chocolate chunks. Soft, sweet, and perfectly balanced, this one's a fan favorite for a reason.",
+        price: 350,
+        image: "/redvelvet.png",
+        bgColor: "#E9967A"
+    },
+    {
         title: "Choco Walnut Cookie",
         description: "Delicious chocolate cookie blended to perfection with the thick nutty texture of roasted walnuts, what more can you ask for in a cookie?",
         price: 450,
@@ -42,11 +42,11 @@ const data = [
         bgColor: "#F5DEB3"
     },
     {
-        title: "Red Velvet Cookie",
-        description: "A rich, velvety red cookie baked to perfection and packed with creamy white chocolate chunks. Soft, sweet, and perfectly balanced, this one's a fan favorite for a reason.",
-        price: 350,
-        image: "/walnut.png",
-        bgColor: "#E9967A"
+        title: "Peanut Butter Cookie",
+        description: "These moist and velvety cookies by Crumble are filled with cream cheese and huge chunks of white chocolate and are oven-baked daily as per your order.",
+        price: 450,
+        image: "/peanutbutter.png",
+        bgColor: "#FFB6C1"
     },
 ];
 
