@@ -13,7 +13,7 @@ import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
 import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
 
 // Constants
-const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
+const STORE_LOCATION = { lat: 31.3780, lng: 74.2544 };
 const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
 
 // Lazy-load map component
