@@ -15,7 +15,7 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             className="flex items-center justify-between p-4 rounded-2xl w-full max-w-4xl mx-auto my-4 sm:flex-row flex-col"
             style={{ backgroundColor: bgColor }}
         >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full sm:w-200">
                 <div className="relative w-[100px] h-[100px]">
                     <Image src={image} alt={title} fill className="object-contain" />
                 </div>
@@ -25,6 +25,7 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
             </div>
 
             {/* Price per cookie */}
+            
             <div className="flex gap-5">
                 <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2 border border-black shadow">
                     <div>Price:</div>
@@ -64,13 +65,16 @@ export default function CartItem({ title, price, image, quantity, bgColor }) {
                 </div>
             </div>
             </div>
+            
 
             {/* Total Price */}
+            <div className="ps-5">
             <div className="mt-5 flex gap-4 items-center justify-center md:justify-start bg-white rounded-lg p-2 border border-black shadow">
             
                 <div>Total:</div>
                 <div>{(price * quantity)}</div>
             </div>
+        </div>
         </div>
     );
 }
