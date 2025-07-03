@@ -473,7 +473,7 @@ const Checkout = () => {
                   )}
 
                   {/* Map */}
-                  {isOrderingTime && (
+                  {/* {isOrderingTime && (
                     <div className="space-y-2">
                       <h3 className="font-medium text-gray-700">Delivery Location</h3>
                       <div className="h-[250px] sm:h-[300px] w-full border border-gray-300 rounded-md overflow-hidden">
@@ -491,7 +491,7 @@ const Checkout = () => {
                         💡 You can drag the marker to adjust your exact location
                       </p>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Additional Notes */}
                   <div>
