@@ -11,9 +11,8 @@ import AddressForm from "@/components/addressForm";
 import OrderSummary from "@/components/orderSummary";
 import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
 
-// Constants
-const STORE_LOCATION = { lat: 31.3780, lng: 74.2544 };
-const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
+const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
+const DELIVERY_RADIUS_KM = 12;
 
 const Map = dynamic(() => import('../../components/mapComponent'), {
   ssr: false,
@@ -216,7 +215,7 @@ const Checkout = () => {
           />
         </div>
 
-        <div className="order-2 lg:order-1 bg-white p-6 sm:p-8 rounded-lg shadow-md w-full">
+        <div className="order-2 lg:order-1 bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-md w-full max-w-full max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
