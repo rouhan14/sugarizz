@@ -45,9 +45,10 @@ export default function RootLayout({ children }) {
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 text-sm flex items-center justify-center w-full shadow-sm">
           <AlertCircle className="h-4 w-4 mr-2 text-yellow-600" />
           <span>
-            <strong>Sold Out for Today! 🎉
+            <strong>Sold Out for Today! Sold Out for Today! 🎉
 Thank you for the amazing response!
-You can still DM us your order on instagram "suga.rizz" and we’ll start dispatching after 12 PM tomorrow or at a time that suits you. 🍪</strong>
+You can still DM us your order on Instagram @suga.rizz and we’ll get back to you.
+Please note, we will be closed tomorrow due to 10th Muharram. 🍪</strong>
           </span>
         </div>
         <Navbar />
