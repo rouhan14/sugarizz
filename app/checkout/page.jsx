@@ -6,12 +6,16 @@ import useCookieStore from "@/store/cookieStore";
 import data from "@/data";
 import ErrorModal from "@/components/errorModal";
 import LocationService from "@/components/locationService";
-import AddressForm from "@/components/addressForm";
+import AddressForm from "@/components/checkout/addressForm";
 import OrderSummary from "@/components/orderSummary";
 import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
 import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
-import PaymentMethod from "@/components/laptop/PaymentMethod";
+import PaymentMethod from "@/components/checkout/PaymentMethod";
 import { useMemo } from "react";
+
+import OrderingStatus from "@/components/checkout/OrderingStatus";
+import CustomerInfo from "@/components/checkout/CustomerInfo";
+import OrderSummaryExtras from "@/components/checkout/OrderSummaryExtras";
 
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
@@ -315,7 +319,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-4 py-8">
       <ErrorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -347,75 +351,19 @@ const Checkout = () => {
 
             {/* FORM - Mobile Second */}
             <div className="w-full">
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <div className="w-full max-w-2xl p-4 sm:p-6 sm:p-8 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl transition-all duration-300">
                 {/* Ordering Hours Status */}
-                <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
-                  ? 'bg-green-50 border-green-200'
-                  : 'bg-red-50 border-red-200'
-                  }`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
-                      }`}></span>
-                    <h3 className={`font-medium ${isOrderingTime ? 'text-green-800' : 'text-red-800'
-                      }`}>
-                      {isOrderingTime ? '🟢 Orders Open' : '🔴 Orders Closed'}
-                    </h3>
-                  </div>
-                  <div className={`text-sm ${isOrderingTime ? 'text-green-700' : 'text-red-700'
-                    }`}>
-                    <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
-                    <p><strong>Ordering Hours:</strong> 1:00 PM - 11:00 PM (Pakistan Time)</p>
-                    {!isOrderingTime && (
-                      <p><strong>Next Available:</strong> {nextOrderingTime}</p>
-                    )}
-                  </div>
-                </div>
+                <OrderingStatus
+                  isOrderingTime={isOrderingTime}
+                  currentTime={currentTime}
+                  nextOrderingTime={nextOrderingTime}
+                />
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Customer Information */}
-                  <div className="space-y-4">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
-                      Customer Information
-                    </h2>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">
-                        Name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        disabled={!isOrderingTime}
-                        className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">
-                        Email<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        required
-                        disabled={!isOrderingTime}
-                        className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">
-                        Phone Number<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        required
-                        disabled={!isOrderingTime}
-                        className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Payment Method */}
+                  <CustomerInfo isOrderingTime={isOrderingTime} />
+
                   {/* Payment Method */}
                   <div className="p-6">
                     <PaymentMethod
@@ -424,36 +372,6 @@ const Checkout = () => {
                       isOrderingTime={true}
                     />
                   </div>
-                  {/* <div>
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                      }`}>
-                      <label className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="cod"
-                          checked
-                          readOnly
-                          disabled={!isOrderingTime}
-                          className="w-4 h-4"
-                        />
-                        <span className="font-medium">Cash on Delivery</span>
-                      </label>
-                      <label className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="cod"
-                          checked
-                          readOnly
-                          disabled={!isOrderingTime}
-                          className="w-4 h-4"
-                        />
-                        <span className="font-medium">Cash on Delivery</span>
-                      </label>
-                    </div>
-                  </div> */}
 
                   {/* Location Services */}
                   {isOrderingTime && (
@@ -475,74 +393,35 @@ const Checkout = () => {
                   />
 
                   {/* Minimum Order Notice */}
-                  {!meetsMinimumOrder && (
-                    <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
-                      <h3 className="font-medium text-orange-800 mb-2">⚠️ Minimum Order Required</h3>
-                      <p className="text-sm text-orange-700">
-                        Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}.
-                        You need Rs. {(MINIMUM_ORDER_AMOUNT - subtotal).toLocaleString()} more to place this order.
-                      </p>
-                    </div>
-                  )}
+                  <OrderSummaryExtras
+                    meetsMinimumOrder={meetsMinimumOrder}
+                    MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
+                    subtotal={subtotal}
+                    deliveryDetails={deliveryDetails}
+                    getDeliveryZoneName={getDeliveryZoneName}
+                    isOrderingTime={isOrderingTime}
+                  />
 
-                  {/* Delivery Zone Info */}
-                  {deliveryDetails && (
-                    <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                      <h3 className="font-medium text-green-800 mb-2">Delivery Information</h3>
-                      <div className="text-sm text-green-700 space-y-1">
-                        <p><strong>Zone:</strong> {getDeliveryZoneName()}</p>
-                        <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
-                        <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Map */}
-                  {/* {isOrderingTime && (
-                    <div className="space-y-2">
-                      <h3 className="font-medium text-gray-700">Delivery Location</h3>
-                      <div className="h-[250px] sm:h-[300px] w-full border border-gray-300 rounded-md overflow-hidden">
-                        <Map
-                          key={mapKey}
-                          center={mapCenter}
-                          markerPos={markerPos}
-                          storeLocation={STORE_LOCATION}
-                          deliveryRadius={MAX_DELIVERY_DISTANCE}
-                          onMarkerDrag={handleMapMarkerDrag}
-                          draggable={true}
-                        />
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        💡 You can drag the marker to adjust your exact location
-                      </p>
-                    </div>
-                  )} */}
-
-                  {/* Additional Notes */}
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700">
-                      Additional Recommendations (optional)
-                    </label>
-                    <textarea
-                      name="recommendations"
-                      rows="3"
-                      disabled={!isOrderingTime}
-                      className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      placeholder="Any special instructions for your order..."
-                    />
-                  </div>
 
                   {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={true}
-                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
-                  >Place Order
+                    className={`w-full py-3 px-4 rounded-md text-white font-semibold
+    bg-green-500/70 hover:bg-green-500/40
+    border border-white/20 backdrop-blur-md
+    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
+    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
+    transition-all duration-300
+    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+                  >
+                    Place Order
                   </button>
+
 
                   {/* Order Requirements Status */}
                   {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
-                    <div className="text-sm text-gray-600 text-center">
+                    <div className="text-sm text-red-300 text-center">
                       {!isOrderingTime && "✗ Orders only accepted 2:00 PM - 10:00 PM (Pakistan Time)"}
                       {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
                         "✗ Minimum order amount and delivery location required"
@@ -563,73 +442,20 @@ const Checkout = () => {
           {/* Desktop Layout - Original Order */}
           <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
             {/* LEFT - FORM */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="w-full max-w-2xl backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300">
+
               {/* Ordering Hours Status */}
-              <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
-                ? 'bg-green-50 border-green-200'
-                : 'bg-red-50 border-red-200'
-                }`}>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
-                    }`}></span>
-                  <h3 className={`font-medium ${isOrderingTime ? 'text-green-800' : 'text-red-800'
-                    }`}>
-                    {isOrderingTime ? '🟢 Orders Open' : '🔴 Orders Closed'}
-                  </h3>
-                </div>
-                <div className={`text-sm ${isOrderingTime ? 'text-green-700' : 'text-red-700'
-                  }`}>
-                  <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
-                  <p><strong>Ordering Hours:</strong> 1:00 PM - 11:00 PM (Pakistan Time)</p>
-                  {!isOrderingTime && (
-                    <p><strong>Next Available:</strong> {nextOrderingTime}</p>
-                  )}
-                </div>
-              </div>
+              <OrderingStatus
+                isOrderingTime={isOrderingTime}
+                currentTime={currentTime}
+                nextOrderingTime={nextOrderingTime}
+              />
+
 
               <form onSubmit={handleSubmit} className="space-y-6">
+
                 {/* Customer Information */}
-                <div className="space-y-4">
-                  <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
-                    Customer Information
-                  </h2>
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700">
-                      Name<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      disabled={!isOrderingTime}
-                      className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700">
-                      Email<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      disabled={!isOrderingTime}
-                      className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700">
-                      Phone Number<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      required
-                      disabled={!isOrderingTime}
-                      className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    />
-                  </div>
-                </div>
+                <CustomerInfo isOrderingTime={isOrderingTime} />
 
                 {/* Payment Method */}
                 <div className="p-6">
@@ -639,41 +465,6 @@ const Checkout = () => {
                     isOrderingTime={true}
                   />
                 </div>
-                {/* <div>
-                  <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-                  <div className="flex flex-col gap-2">
-                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                      }`}>
-                      <label className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="cod"
-                          checked
-                          readOnly
-                          disabled={!isOrderingTime}
-                          className="w-4 h-4"
-                        />
-                        <span className="font-medium">Cash on Delivery</span>
-                      </label>
-                    </div>
-                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                      }`}>
-                      <label className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="cod"
-                          checked
-                          readOnly
-                          disabled={!isOrderingTime}
-                          className="w-4 h-4"
-                        />
-                        <span className="font-medium">Cash on Delivery</span>
-                      </label>
-                    </div>
-                  </div>
-                </div> */}
 
                 {/* Location Services */}
                 {isOrderingTime && (
@@ -695,74 +486,34 @@ const Checkout = () => {
                 />
 
                 {/* Minimum Order Notice */}
-                {!meetsMinimumOrder && (
-                  <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
-                    <h3 className="font-medium text-orange-800 mb-2">⚠️ Minimum Order Required</h3>
-                    <p className="text-sm text-orange-700">
-                      Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}.
-                      You need Rs. {(MINIMUM_ORDER_AMOUNT - subtotal).toLocaleString()} more to place this order.
-                    </p>
-                  </div>
-                )}
-
-                {/* Delivery Zone Info */}
-                {deliveryDetails && (
-                  <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                    <h3 className="font-medium text-green-800 mb-2">Delivery Information</h3>
-                    <div className="text-sm text-green-700 space-y-1">
-                      <p><strong>Zone:</strong> {getDeliveryZoneName()}</p>
-                      <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
-                      <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Map */}
-                {/* {isOrderingTime && (
-                  <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Delivery Location</h3>
-                    <div className="h-[300px] w-full border border-gray-300 rounded-md overflow-hidden">
-                      <Map
-                        key={mapKey}
-                        center={mapCenter}
-                        markerPos={markerPos}
-                        storeLocation={STORE_LOCATION}
-                        deliveryRadius={MAX_DELIVERY_DISTANCE}
-                        onMarkerDrag={handleMapMarkerDrag}
-                        draggable={true}
-                      />
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      💡 You can drag the marker to adjust your exact location
-                    </p>
-                  </div>
-                )} */}
-
-                {/* Additional Notes */}
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700">
-                    Additional Recommendations (optional)
-                  </label>
-                  <textarea
-                    name="recommendations"
-                    rows="3"
-                    disabled={!isOrderingTime}
-                    className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    placeholder="Any special instructions for your order..."
-                  />
-                </div>
+                <OrderSummaryExtras
+                  meetsMinimumOrder={meetsMinimumOrder}
+                  MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
+                  subtotal={subtotal}
+                  deliveryDetails={deliveryDetails}
+                  getDeliveryZoneName={getDeliveryZoneName}
+                  isOrderingTime={isOrderingTime}
+                />
 
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={true}
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
-                >Place Order
+                  className={`w-full py-3 px-4 rounded-md text-white font-semibold
+    bg-green-500/70 hover:bg-green-500/40
+    border border-white/20 backdrop-blur-md
+    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
+    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
+    transition-all duration-300
+    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+                >
+                  Place Order
                 </button>
+
 
                 {/* Order Requirements Status */}
                 {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
-                  <div className="text-sm text-gray-600 text-center">
+                  <div className="text-sm text-red-300 text-center">
                     {!isOrderingTime && "✗ Orders only accepted 2:00 PM - 10:00 PM (Pakistan Time)"}
                     {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
                       "✗ Minimum order amount and delivery location required"

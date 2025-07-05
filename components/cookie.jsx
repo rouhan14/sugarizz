@@ -32,8 +32,16 @@ export default function CookieHero({
 
     return (
         <section
-            className={`relative flex items-center justify-center w-full max-w-6xl mx-auto px-4 py-3 md:py-1 transition-colors duration-300 rounded-xl overflow-visible`}
-            style={{ backgroundColor: hovered && isDesktop ? bgColor : "" }}
+            className={`relative flex items-center justify-center w-full max-w-6xl mx-auto px-4 py-6 md:py-8 
+  transition-all duration-300 rounded-2xl overflow-visible
+  bg-white/10 backdrop-blur-md border border-white/20
+  shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.35)]
+  hover:scale-[1.015]`}
+            style={{
+                background: hovered && isDesktop
+                    ? `linear-gradient(to bottom right, ${bgColor}50, ${bgColor}90)`
+                    : undefined,
+            }}
             onMouseEnter={() => isDesktop && setHovered(true)}
             onMouseLeave={() => isDesktop && setHovered(false)}
         >
@@ -53,8 +61,9 @@ export default function CookieHero({
                 </div>
 
                 {/* Text */}
-                
+
                 <div className="text-center md:text-left max-w-md">
+
                     <h1 className={`text-3xl md:text-4xl font-extrabold ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                         {title}
                     </h1>
@@ -67,29 +76,30 @@ export default function CookieHero({
                         </h6>
                         <div className={`${hovered && isDesktop ? "text-black" : "text-white"}`}>PKR</div>
                     </div>
+
                     <div className="mt-5 flex gap-4 justify-center md:justify-start">
                         <div className="relative min-w-[120px]">
                             <div className="transition-all duration-300 ease-in-out">
                                 {quantity === 0 ? (
                                     <Button
                                         onClick={() => increase(title)}
-                                        className="w-full transition-all duration-300"
+                                        className="w-full bg-green-500/70 hover:bg-green-500/40 border border-white/20 backdrop-blur-md shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)] hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)] text-white font-semibold py-2 rounded-xl transition-all duration-300 cursor-pointer"
                                     >
                                         Order Now
                                     </Button>
                                 ) : (
-                                    <div className="flex items-center gap-4 bg-white rounded-lg shadow-md border border-black transition-all duration-300">
+                                    <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-[inset_0_0_4px_rgba(255,255,255,0.1),_0_4px_12px_rgba(0,0,0,0.2)] transition-all duration-300">
                                         <button
                                             onClick={() => decrease(title)}
-                                            className="text-base p-4 rounded-l-lg hover:bg-gray-100 transition"
+                                            className="text-white p-4 rounded-l-xl hover:bg-white/10 transition cursor-pointer"
                                             style={{ lineHeight: 0 }}
                                         >
                                             <FaMinus size={14} />
                                         </button>
-                                        <span className="font-semibold w-4 text-center">{quantity}</span>
+                                        <span className="font-semibold w-4 text-center text-white">{quantity}</span>
                                         <button
                                             onClick={() => increase(title)}
-                                            className="text-base p-4 rounded-r-lg hover:bg-gray-100 transition"
+                                            className="text-white p-4 rounded-r-xl hover:bg-white/10 transition cursor-pointer"
                                             style={{ lineHeight: 0 }}
                                         >
                                             <FaPlus size={14} />
@@ -98,20 +108,22 @@ export default function CookieHero({
                                 )}
                             </div>
                         </div>
+
                         {quantity > 0 && (
                             <button
                                 onClick={() => decrease(title, true)}
-                                className="text-gray-500 hover:text-red-600 transition-all duration-200 p-2 cursor-pointer"
+                                className="text-gray-400 hover:text-red-500 transition-all duration-200 p-2 cursor-pointer"
                                 title="Remove"
                             >
                                 <FaTrash size={16} />
                             </button>
                         )}
                     </div>
+
                 </div>
             </div>
-            
-            
+
+
         </section>
     );
 }

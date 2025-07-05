@@ -52,23 +52,25 @@ const LocationService = ({ onLocationSuccess, onLocationError }) => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+      <h2 className="text-xl font-semibold text-white border-b border-white/30 pb-2">
         Delivery Location
       </h2>
       
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="rounded-2xl p-4 border border-white/20 backdrop-blur-md bg-blue-400/20 shadow-[inset_0_0_4px_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,255,0.2)] transition-all duration-300 text-white">
+
+
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0">
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-blue-900 mb-1">
+            <h3 className="font-semibold text-white border-b border-white/30 pb-2">
               Get precise location for accurate delivery
             </h3>
-            <p className="text-sm text-blue-700 mb-3">
+            <p className="text-sm mb-3">
               Allow location access for the most accurate delivery address, or enter your address manually below.
             </p>
             
@@ -76,7 +78,7 @@ const LocationService = ({ onLocationSuccess, onLocationError }) => {
               type="button"
               onClick={getCurrentLocation}
               disabled={isGettingLocation || locationPermission === 'granted'}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center px-4 py-2 rounded-xl text-white bg-blue-500/20 hover:bg-blue-500/30 border border-white/20 backdrop-blur-md shadow-[inset_0_0_3px_rgba(255,255,255,0.15),_0_2px_6px_rgba(0,0,255,0.2)] hover:shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_3px_8px_rgba(0,0,255,0.25)] transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
             >
               {isGettingLocation ? (
                 <>
@@ -110,7 +112,7 @@ const LocationService = ({ onLocationSuccess, onLocationError }) => {
             )}
             
             {locationPermission === 'granted' && (
-              <p className="text-sm text-green-600 mt-2">
+              <p className="text-sm text-green-300 mt-2">
                 ✓ Location obtained successfully! You can still adjust the address below if needed.
               </p>
             )}
