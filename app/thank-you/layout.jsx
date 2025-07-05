@@ -47,7 +47,8 @@ export default function RootLayout({ children }) {
           <span>
             <strong>Sold Out for Today! 🎉
 Thank you for the amazing response!
-You can still DM us your order on instagram "suga.rizz" and we’ll start dispatching after 12 PM tomorrow or at a time that suits you. 🍪</strong>
+You can still DM us your order on Instagram @suga.rizz and we’ll get back to you.
+Please note, we will be closed tomorrow due to 10th Muharram. 🍪</strong>
           </span>
         </div>
         <Navbar />
