@@ -1,7 +1,14 @@
+"use client"
+
 import React from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 const Page = () => {
+
+  const searchParams = useSearchParams();
+  const eta = searchParams.get('eta') || "45-60 minutes";
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -42,7 +49,7 @@ const Page = () => {
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Expected Delivery:</span>
-              <span className="font-semibold text-gray-800">45-60 minutes</span>
+              <span className="font-semibold text-gray-800">{eta}</span>
             </div>
             <div className="flex items-center justify-between text-sm mt-2">
               <span className="text-gray-600">Payment Method:</span>

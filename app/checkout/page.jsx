@@ -16,19 +16,19 @@ import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
 const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
 const MINIMUM_ORDER_AMOUNT = 1200; // Minimum order amount in Rs.
-const ORDERING_START_HOUR = 2; // 2 PM in 24-hour format
-const ORDERING_END_HOUR = 22; // 10 PM in 24-hour format
+const ORDERING_START_HOUR = 13; // 2 PM in 24-hour format
+const ORDERING_END_HOUR = 23; // 10 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
 
 // Lazy-load map component
-const Map = dynamic(() => import('../../components/mapComponent'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[300px] w-full bg-gray-200 flex items-center justify-center">
-      Loading map...
-    </div>
-  )
-});
+// const Map = dynamic(() => import('../../components/mapComponent'), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="h-[300px] w-full bg-gray-200 flex items-center justify-center">
+//       Loading map...
+//     </div>
+//   )
+// });
 
 const Checkout = () => {
   // Address states
@@ -64,7 +64,7 @@ const Checkout = () => {
     const now = new Date();
     const pakistanTime = new Date(now.toLocaleString("en-US", { timeZone: PAKISTAN_TIMEZONE }));
     const currentHour = pakistanTime.getHours();
-    
+
     // Format current time for display
     const timeString = pakistanTime.toLocaleString("en-US", {
       timeZone: PAKISTAN_TIMEZONE,
@@ -89,7 +89,7 @@ const Checkout = () => {
         // Before 2 PM, next ordering is today at 2 PM
         nextOrdering.setHours(ORDERING_START_HOUR, 0, 0, 0);
       }
-      
+
       const nextTimeString = nextOrdering.toLocaleString("en-US", {
         timeZone: PAKISTAN_TIMEZONE,
         weekday: 'long',
@@ -145,7 +145,7 @@ const Checkout = () => {
 
     const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
     const zoneDetails = getDeliveryDetails(distance);
-    
+
     if (!zoneDetails) {
       setDeliveryDetails(null);
       showErrorModal(
@@ -218,14 +218,14 @@ const Checkout = () => {
 
   const getDeliveryZoneName = () => {
     if (!deliveryDetails) return "Outside Delivery Zone";
-    
+
     const distance = calculateDistance(
-      STORE_LOCATION.lat, 
-      STORE_LOCATION.lng, 
-      currentLocation?.lat || markerPos.lat, 
+      STORE_LOCATION.lat,
+      STORE_LOCATION.lng,
+      currentLocation?.lat || markerPos.lat,
       currentLocation?.lng || markerPos.lng
     );
-    
+
     if (distance <= 5) return "Zone A";
     if (distance <= 8) return "Zone B";
     if (distance <= 14) return "Zone C";
@@ -248,7 +248,7 @@ const Checkout = () => {
 
     if (!meetsMinimumOrder) {
       showErrorModal(
-        "Minimum Order Required", 
+        "Minimum Order Required",
         `Your order total must be at least Rs. ${MINIMUM_ORDER_AMOUNT.toLocaleString()}. Please add more items to your cart.`
       );
       return;
@@ -293,8 +293,8 @@ const Checkout = () => {
       const result = await res.json();
 
       if (result.success) {
+        router.push(`/thank-you?eta=${encodeURIComponent(deliveryDetails.eta)}`);
         resetQuantities();
-        router.push("/thank-you");
       } else {
         showErrorModal("Order Failed", result.message || "Something went wrong placing your order.");
       }
@@ -339,26 +339,22 @@ const Checkout = () => {
             <div className="w-full">
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 {/* Ordering Hours Status */}
-                <div className={`mb-6 p-4 rounded-lg border ${
-                  isOrderingTime 
-                    ? 'bg-green-50 border-green-200' 
+                <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
+                    ? 'bg-green-50 border-green-200'
                     : 'bg-red-50 border-red-200'
-                }`}>
+                  }`}>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`w-3 h-3 rounded-full ${
-                      isOrderingTime ? 'bg-green-500' : 'bg-red-500'
-                    }`}></span>
-                    <h3 className={`font-medium ${
-                      isOrderingTime ? 'text-green-800' : 'text-red-800'
-                    }`}>
+                    <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
+                      }`}></span>
+                    <h3 className={`font-medium ${isOrderingTime ? 'text-green-800' : 'text-red-800'
+                      }`}>
                       {isOrderingTime ? '🟢 Orders Open' : '🔴 Orders Closed'}
                     </h3>
                   </div>
-                  <div className={`text-sm ${
-                    isOrderingTime ? 'text-green-700' : 'text-red-700'
-                  }`}>
+                  <div className={`text-sm ${isOrderingTime ? 'text-green-700' : 'text-red-700'
+                    }`}>
                     <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
-                    <p><strong>Ordering Hours:</strong> 2:00 PM - 10:00 PM (Pakistan Time)</p>
+                    <p><strong>Ordering Hours:</strong> 1:00 PM - 11:00 PM (Pakistan Time)</p>
                     {!isOrderingTime && (
                       <p><strong>Next Available:</strong> {nextOrderingTime}</p>
                     )}
@@ -412,18 +408,17 @@ const Checkout = () => {
                   {/* Payment Method */}
                   <div>
                     <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-                    <div className={`border border-gray-300 rounded-md p-4 ${
-                      isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                    }`}>
+                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
+                      }`}>
                       <label className="flex items-center gap-3">
-                        <input 
-                          type="radio" 
-                          name="payment" 
-                          value="cod" 
-                          checked 
-                          readOnly 
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cod"
+                          checked
+                          readOnly
                           disabled={!isOrderingTime}
-                          className="w-4 h-4" 
+                          className="w-4 h-4"
                         />
                         <span className="font-medium">Cash on Delivery</span>
                       </label>
@@ -454,7 +449,7 @@ const Checkout = () => {
                     <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
                       <h3 className="font-medium text-orange-800 mb-2">⚠️ Minimum Order Required</h3>
                       <p className="text-sm text-orange-700">
-                        Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}. 
+                        Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}.
                         You need Rs. {(MINIMUM_ORDER_AMOUNT - subtotal).toLocaleString()} more to place this order.
                       </p>
                     </div>
@@ -513,8 +508,8 @@ const Checkout = () => {
                     disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
                   >
-                    {isProcessing ? "Processing..." : 
-                     !isOrderingTime ? "Ordering Closed" : "Place Order"}
+                    {isProcessing ? "Processing..." :
+                      !isOrderingTime ? "Ordering Closed" : "Place Order"}
                   </button>
 
                   {/* Order Requirements Status */}
@@ -542,24 +537,20 @@ const Checkout = () => {
             {/* LEFT - FORM */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               {/* Ordering Hours Status */}
-              <div className={`mb-6 p-4 rounded-lg border ${
-                isOrderingTime 
-                  ? 'bg-green-50 border-green-200' 
+              <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
+                  ? 'bg-green-50 border-green-200'
                   : 'bg-red-50 border-red-200'
-              }`}>
+                }`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`w-3 h-3 rounded-full ${
-                    isOrderingTime ? 'bg-green-500' : 'bg-red-500'
-                  }`}></span>
-                  <h3 className={`font-medium ${
-                    isOrderingTime ? 'text-green-800' : 'text-red-800'
-                  }`}>
+                  <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
+                    }`}></span>
+                  <h3 className={`font-medium ${isOrderingTime ? 'text-green-800' : 'text-red-800'
+                    }`}>
                     {isOrderingTime ? '🟢 Orders Open' : '🔴 Orders Closed'}
                   </h3>
                 </div>
-                <div className={`text-sm ${
-                  isOrderingTime ? 'text-green-700' : 'text-red-700'
-                }`}>
+                <div className={`text-sm ${isOrderingTime ? 'text-green-700' : 'text-red-700'
+                  }`}>
                   <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
                   <p><strong>Ordering Hours:</strong> 2:00 PM - 10:00 PM (Pakistan Time)</p>
                   {!isOrderingTime && (
@@ -615,18 +606,17 @@ const Checkout = () => {
                 {/* Payment Method */}
                 <div>
                   <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-                  <div className={`border border-gray-300 rounded-md p-4 ${
-                    isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                  }`}>
+                  <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
+                    }`}>
                     <label className="flex items-center gap-3">
-                      <input 
-                        type="radio" 
-                        name="payment" 
-                        value="cod" 
-                        checked 
-                        readOnly 
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="cod"
+                        checked
+                        readOnly
                         disabled={!isOrderingTime}
-                        className="w-4 h-4" 
+                        className="w-4 h-4"
                       />
                       <span className="font-medium">Cash on Delivery</span>
                     </label>
@@ -657,7 +647,7 @@ const Checkout = () => {
                   <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
                     <h3 className="font-medium text-orange-800 mb-2">⚠️ Minimum Order Required</h3>
                     <p className="text-sm text-orange-700">
-                      Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}. 
+                      Minimum order amount is Rs. {MINIMUM_ORDER_AMOUNT.toLocaleString()}.
                       You need Rs. {(MINIMUM_ORDER_AMOUNT - subtotal).toLocaleString()} more to place this order.
                     </p>
                   </div>
@@ -676,7 +666,7 @@ const Checkout = () => {
                 )}
 
                 {/* Map */}
-                {isOrderingTime && (
+                {/* {isOrderingTime && (
                   <div className="space-y-2">
                     <h3 className="font-medium text-gray-700">Delivery Location</h3>
                     <div className="h-[300px] w-full border border-gray-300 rounded-md overflow-hidden">
@@ -694,7 +684,7 @@ const Checkout = () => {
                       💡 You can drag the marker to adjust your exact location
                     </p>
                   </div>
-                )}
+                )} */}
 
                 {/* Additional Notes */}
                 <div>
@@ -716,8 +706,8 @@ const Checkout = () => {
                   disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
                 >
-                  {isProcessing ? "Processing..." : 
-                   !isOrderingTime ? "Ordering Closed" : "Place Order"}
+                  {isProcessing ? "Processing..." :
+                    !isOrderingTime ? "Ordering Closed" : "Place Order"}
                 </button>
 
                 {/* Order Requirements Status */}
