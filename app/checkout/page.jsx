@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import useCookieStore from "@/store/cookieStore";
 import data from "@/data";
 import ErrorModal from "@/components/errorModal";
@@ -11,6 +10,8 @@ import AddressForm from "@/components/addressForm";
 import OrderSummary from "@/components/orderSummary";
 import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
 import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
+import PaymentMethod from "@/components/laptop/PaymentMethod";
+import { useMemo } from "react";
 
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
@@ -19,16 +20,6 @@ const MINIMUM_ORDER_AMOUNT = 1200; // Minimum order amount in Rs.
 const ORDERING_START_HOUR = 1; // 2 PM in 24-hour format
 const ORDERING_END_HOUR = 23; // 10 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
-
-// Lazy-load map component
-// const Map = dynamic(() => import('../../components/mapComponent'), {
-//   ssr: false,
-//   loading: () => (
-//     <div className="h-[300px] w-full bg-gray-200 flex items-center justify-center">
-//       Loading map...
-//     </div>
-//   )
-// });
 
 const Checkout = () => {
   // Address states
@@ -58,6 +49,9 @@ const Checkout = () => {
 
   const router = useRouter();
   const { quantities, resetQuantities } = useCookieStore();
+
+  // Payment Method State
+  const [paymentMethod, setPaymentMethod] = useState("cod");
 
   // Function to check if current time is within ordering hours
   const checkOrderingTime = () => {
@@ -122,10 +116,22 @@ const Checkout = () => {
     });
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const deliveryCharges = deliveryDetails ? deliveryDetails.charge : 0;
-  const total = subtotal + deliveryCharges;
-  const isWithinRange = deliveryDetails !== null;
+
+  // Compute discounted price
+  const finalPrice = useMemo(() => {
+    return paymentMethod === "online" ? subtotal * 0.9 : subtotal;
+  }, [paymentMethod, subtotal]);
+
+  // Fallback to null-safe deliveryCharges
+  const deliveryCharges = deliveryDetails?.charge ?? 0;
+
+  // Only show total if there's a subtotal > 0
+  const total = subtotal > 0 ? finalPrice + deliveryCharges : 0;
+
+  const isWithinRange = !!deliveryDetails;
   const meetsMinimumOrder = subtotal >= MINIMUM_ORDER_AMOUNT;
+
+
 
   const showErrorModal = (title, message) => {
     setModalTitle(title);
@@ -324,8 +330,10 @@ const Checkout = () => {
             {/* ORDER SUMMARY - Mobile First */}
             <div className="w-full">
               <OrderSummary
+                paymentMethod={paymentMethod}
                 cartItems={cartItems}
                 subtotal={subtotal}
+                finalPrice={finalPrice}
                 deliveryCharges={deliveryCharges}
                 total={total}
                 isWithinRange={isWithinRange}
@@ -340,8 +348,8 @@ const Checkout = () => {
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 {/* Ordering Hours Status */}
                 <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
+                  ? 'bg-green-50 border-green-200'
+                  : 'bg-red-50 border-red-200'
                   }`}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
@@ -406,7 +414,15 @@ const Checkout = () => {
                   </div>
 
                   {/* Payment Method */}
-                  <div>
+                  {/* Payment Method */}
+                  <div className="p-6">
+                    <PaymentMethod
+                      selected={paymentMethod}
+                      onChange={setPaymentMethod}
+                      isOrderingTime={true}
+                    />
+                  </div>
+                  {/* <div>
                     <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
                     <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
                       }`}>
@@ -422,8 +438,20 @@ const Checkout = () => {
                         />
                         <span className="font-medium">Cash on Delivery</span>
                       </label>
+                      <label className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cod"
+                          checked
+                          readOnly
+                          disabled={!isOrderingTime}
+                          className="w-4 h-4"
+                        />
+                        <span className="font-medium">Cash on Delivery</span>
+                      </label>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Location Services */}
                   {isOrderingTime && (
@@ -538,8 +566,8 @@ const Checkout = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               {/* Ordering Hours Status */}
               <div className={`mb-6 p-4 rounded-lg border ${isOrderingTime
-                  ? 'bg-green-50 border-green-200'
-                  : 'bg-red-50 border-red-200'
+                ? 'bg-green-50 border-green-200'
+                : 'bg-red-50 border-red-200'
                 }`}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-500' : 'bg-red-500'
@@ -552,7 +580,7 @@ const Checkout = () => {
                 <div className={`text-sm ${isOrderingTime ? 'text-green-700' : 'text-red-700'
                   }`}>
                   <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
-                  <p><strong>Ordering Hours:</strong> 2:00 PM - 10:00 PM (Pakistan Time)</p>
+                  <p><strong>Ordering Hours:</strong> 1:00 PM - 11:00 PM (Pakistan Time)</p>
                   {!isOrderingTime && (
                     <p><strong>Next Available:</strong> {nextOrderingTime}</p>
                   )}
@@ -604,24 +632,48 @@ const Checkout = () => {
                 </div>
 
                 {/* Payment Method */}
-                <div>
-                  <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
-                  <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
-                    }`}>
-                    <label className="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="cod"
-                        checked
-                        readOnly
-                        disabled={!isOrderingTime}
-                        className="w-4 h-4"
-                      />
-                      <span className="font-medium">Cash on Delivery</span>
-                    </label>
-                  </div>
+                <div className="p-6">
+                  <PaymentMethod
+                    selected={paymentMethod}
+                    onChange={setPaymentMethod}
+                    isOrderingTime={true}
+                  />
                 </div>
+                {/* <div>
+                  <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Payment Method</h2>
+                  <div className="flex flex-col gap-2">
+                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
+                      }`}>
+                      <label className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cod"
+                          checked
+                          readOnly
+                          disabled={!isOrderingTime}
+                          className="w-4 h-4"
+                        />
+                        <span className="font-medium">Cash on Delivery</span>
+                      </label>
+                    </div>
+                    <div className={`border border-gray-300 rounded-md p-4 ${isOrderingTime ? 'bg-gray-50' : 'bg-gray-100'
+                      }`}>
+                      <label className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cod"
+                          checked
+                          readOnly
+                          disabled={!isOrderingTime}
+                          className="w-4 h-4"
+                        />
+                        <span className="font-medium">Cash on Delivery</span>
+                      </label>
+                    </div>
+                  </div>
+                </div> */}
 
                 {/* Location Services */}
                 {isOrderingTime && (
@@ -730,8 +782,10 @@ const Checkout = () => {
 
             {/* RIGHT - ORDER SUMMARY */}
             <OrderSummary
+              paymentMethod={paymentMethod}
               cartItems={cartItems}
               subtotal={subtotal}
+              finalPrice={finalPrice}
               deliveryCharges={deliveryCharges}
               total={total}
               isWithinRange={isWithinRange}

@@ -1,29 +1,33 @@
 import React from 'react';
 
-const OrderSummary = ({ 
-  cartItems, 
-  subtotal, 
-  deliveryCharges, 
-  total, 
-  isWithinRange, 
+const OrderSummary = ({
+  paymentMethod,
+  cartItems,
+  subtotal,
+  finalPrice,
+  deliveryCharges,
+  total,
+  isWithinRange,
   deliveryDetails,
   meetsMinimumOrder,
   minimumOrderAmount
 }) => {
+
+  const discount = subtotal - finalPrice;
   return (
     <div className="bg-white p-6 rounded-lg shadow-md h-fit">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
         Order Summary
       </h2>
-      
+
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
         {cartItems.map((item, index) => (
           <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <img 
-                src={item.image} 
-                alt={item.name} 
+              <img
+                src={item.image}
+                alt={item.name}
                 className="w-12 h-12 object-cover rounded"
               />
               <div>
@@ -43,20 +47,28 @@ const OrderSummary = ({
         <div className="flex justify-between text-gray-600">
           <span>Subtotal:</span>
           <span className={meetsMinimumOrder ? 'text-gray-600' : 'text-orange-600'}>
-            Rs. {subtotal.toLocaleString()}
+            Rs. {finalPrice.toLocaleString()}
             {!meetsMinimumOrder && (
               <span className="text-xs ml-1">(Min: {minimumOrderAmount.toLocaleString()})</span>
             )}
           </span>
         </div>
-        
+
+        {paymentMethod !== 'cod' && (
+        <div className="flex justify-between text-gray-600">
+          <span className="text-green-600 text-sm">10% Discount Applied:</span>
+          <span className='text-green-600 text-sm'>
+            Rs. -{discount}
+          </span>
+        </div>)}
+
         <div className="flex justify-between text-gray-600">
           <span>Delivery Charges:</span>
           <span className={isWithinRange ? 'text-gray-600' : 'text-red-500'}>
             {isWithinRange ? `Rs. ${deliveryCharges.toLocaleString()}` : 'Not Available'}
           </span>
         </div>
-        
+
         {deliveryDetails && (
           <div className="flex justify-between text-sm text-gray-500">
             <span>Estimated Delivery:</span>
@@ -70,7 +82,7 @@ const OrderSummary = ({
         <div className="bg-orange-50 border border-orange-200 rounded-md p-3 mb-4">
           <p className="text-orange-700 text-sm font-medium">⚠️ Minimum Order Required</p>
           <p className="text-orange-600 text-xs mt-1">
-            Add Rs. {(minimumOrderAmount - subtotal).toLocaleString()} more to meet minimum order of Rs. {minimumOrderAmount.toLocaleString()}
+            Add Rs. {(minimumOrderAmount - finalPrice).toLocaleString()} more to meet minimum order of Rs. {minimumOrderAmount.toLocaleString()}
           </p>
         </div>
       )}
