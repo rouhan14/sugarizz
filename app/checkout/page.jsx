@@ -287,6 +287,8 @@ const Checkout = () => {
       estimatedDeliveryTime: deliveryDetails?.eta || "N/A",
       additionalRecommendations: formData.get("recommendations"),
       orderTime: new Date().toLocaleString("en-US", { timeZone: PAKISTAN_TIMEZONE }),
+      paymentMethod,
+      eta: deliveryDetails?.eta || "N/A",
     };
 
     try {
@@ -299,7 +301,7 @@ const Checkout = () => {
       const result = await res.json();
 
       if (result.success) {
-        router.push(`/thank-you?eta=${encodeURIComponent(deliveryDetails.eta)}`);
+        router.push(`/thank-you?eta=${encodeURIComponent(deliveryDetails.eta)}&paymentMethod=${encodeURIComponent(paymentMethod)}&totalPrice=${encodeURIComponent(total)}`);
         resetQuantities();
       } else {
         showErrorModal("Order Failed", result.message || "Something went wrong placing your order.");
