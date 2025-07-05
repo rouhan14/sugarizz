@@ -535,11 +535,9 @@ const Checkout = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                    disabled={true}
                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
-                  >
-                    {isProcessing ? "Processing..." :
-                      !isOrderingTime ? "Ordering Closed" : "Place Order"}
+                  >Place Order
                   </button>
 
                   {/* Order Requirements Status */}
@@ -757,11 +755,9 @@ const Checkout = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  disabled={true}
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
-                >
-                  {isProcessing ? "Processing..." :
-                    !isOrderingTime ? "Ordering Closed" : "Place Order"}
+                >Place Order
                 </button>
 
                 {/* Order Requirements Status */}
