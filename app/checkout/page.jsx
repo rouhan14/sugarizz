@@ -364,7 +364,7 @@ const Checkout = () => {
                 />
 
                 {/* Delivery Zone Information */}
-                {deliveryDetails && (
+                {/* {deliveryDetails && (
                   <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
                     <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
                     <div className="text-white text-sm space-y-1">
@@ -374,7 +374,7 @@ const Checkout = () => {
                       <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Minimum Order Notice */}
                 <OrderSummaryExtras
@@ -464,7 +464,7 @@ const Checkout = () => {
                 />
 
                 {/* Delivery Zone Information */}
-                {deliveryDetails && (
+                {/* {deliveryDetails && (
                   <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
                     <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
                     <div className="text-white text-sm space-y-1">
@@ -474,7 +474,7 @@ const Checkout = () => {
                       <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Minimum Order Notice */}
                 <OrderSummaryExtras
