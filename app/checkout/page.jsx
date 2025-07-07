@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useCookieStore from "@/store/cookieStore";
 import data from "@/data";
@@ -53,8 +53,8 @@ const Checkout = () => {
   // Payment Method State
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  // Function to check if current time is within ordering hours
-  const checkOrderingTime = () => {
+  // Replace your existing checkOrderingTime function with this:
+  const checkOrderingTime = useCallback(() => {
     const now = new Date();
     const pakistanTime = new Date(now.toLocaleString("en-US", { timeZone: PAKISTAN_TIMEZONE }));
     const currentHour = pakistanTime.getHours();
@@ -66,11 +66,13 @@ const Checkout = () => {
       minute: '2-digit',
       hour12: true
     });
-    setCurrentTime(timeString);
 
     // Check if within ordering hours
     const withinHours = currentHour >= ORDERING_START_HOUR && currentHour < ORDERING_END_HOUR;
-    setIsOrderingTime(withinHours);
+
+    // Only update state if values have changed
+    setCurrentTime(prevTime => prevTime !== timeString ? timeString : prevTime);
+    setIsOrderingTime(prevOrdering => prevOrdering !== withinHours ? withinHours : prevOrdering);
 
     // Calculate next ordering time
     if (!withinHours) {
@@ -91,16 +93,20 @@ const Checkout = () => {
         minute: '2-digit',
         hour12: true
       });
-      setNextOrderingTime(nextTimeString);
+
+      setNextOrderingTime(prevNext => prevNext !== nextTimeString ? nextTimeString : prevNext);
+    } else {
+      // Clear next ordering time when within hours
+      setNextOrderingTime(prevNext => prevNext !== "" ? "" : prevNext);
     }
-  };
+  }, []);
 
   // Update time every minute
   useEffect(() => {
     checkOrderingTime();
     const interval = setInterval(checkOrderingTime, 60000); // Check every minute
     return () => clearInterval(interval);
-  }, []);
+  }, [checkOrderingTime]); // Now depends on the stable checkOrderingTime function
 
   const cartItems = Object.entries(quantities)
     .filter(([_, qty]) => qty > 0)
@@ -194,10 +200,29 @@ const Checkout = () => {
     return deliveryDetails.name;
   };
 
+
+  const handleZoneFound = useCallback((zone) => {
+    setDeliveryDetails(zone);
+    console.log("Zone found:", zone);
+  }, []);
+
+  const handleZoneNotFound = useCallback(() => {
+    setDeliveryDetails(null);
+  }, []);
+
+  // 2. Also memoize the activePosition and showZoneChecker
+  const activePosition = useMemo(() => currentLocation, [currentLocation]);
+  const showZoneChecker = useMemo(() =>
+    activePosition && activePosition.lat && activePosition.lng,
+    [activePosition]
+  );
+
+  // 3. Move STORE_LOCATION outside the component or memoize it
+  const STORE_LOCATION = useMemo(() => ({ lat: 31.3536, lng: 74.2518 }), []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check ordering time first
     if (!isOrderingTime) {
       showErrorModal(
         "Ordering Currently Closed",
@@ -234,8 +259,8 @@ const Checkout = () => {
       name: formData.get("name"),
       email: formData.get("email"),
       phoneNumber: formData.get("phone"),
-      userInputAddress, // First address - as entered by user
-      resolvedAddress, // Second address - resolved/location based
+      userInputAddress,
+      resolvedAddress,
       coordinates: currentLocation,
       cookies: cartItems,
       deliveryZone: getDeliveryZoneName(),
@@ -259,8 +284,19 @@ const Checkout = () => {
       const result = await res.json();
 
       if (result.success) {
-        router.push(`/thank-you?eta=${encodeURIComponent(deliveryDetails.eta)}&paymentMethod=${encodeURIComponent(paymentMethod)}&totalPrice=${encodeURIComponent(total)}`);
+        // Clear cart first
         resetQuantities();
+
+        // Then redirect to thank-you page with search params
+        const thankYouUrl = `/thank-you?eta=${encodeURIComponent(orderData.eta)}&paymentMethod=${encodeURIComponent(orderData.paymentMethod)}&totalPrice=${encodeURIComponent(orderData.totalPrice)}`;
+
+        // Use window.location.href as a fallback if router.push fails
+        try {
+          await router.push(thankYouUrl);
+        } catch (routerError) {
+          console.error("Router push failed, using window.location:", routerError);
+          window.location.href = thankYouUrl;
+        }
       } else {
         showErrorModal("Order Failed", result.message || "Something went wrong placing your order.");
       }
@@ -273,8 +309,8 @@ const Checkout = () => {
   };
 
   // Get active position for zone checking
-  const activePosition = currentLocation;
-  const showZoneChecker = activePosition && activePosition.lat && activePosition.lng;
+  // const activePosition = currentLocation;
+  // const showZoneChecker = activePosition && activePosition.lat && activePosition.lng;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-4 py-8">
@@ -291,20 +327,14 @@ const Checkout = () => {
           lat={activePosition.lat}
           lng={activePosition.lng}
           storeLocation={STORE_LOCATION}
-          onZoneFound={(zone) => {
-            setDeliveryDetails(zone);
-            console.log("Zone found:", zone);
-          }}
-          onZoneNotFound={() => {
-            setDeliveryDetails(null);
-            // Removed modal - just set delivery details to null
-          }}
+          onZoneFound={handleZoneFound}
+          onZoneNotFound={handleZoneNotFound}
         />
       )}
 
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-white pt-6">Checkout</h1>
-        
+
         {/* Mobile Layout - Order Summary First */}
         <div className="lg:hidden space-y-6">
           {/* ORDER SUMMARY - Mobile First */}
@@ -362,19 +392,6 @@ const Checkout = () => {
                   isLocationFromGPS={locationFetchedViaGPS}
                   disabled={!isOrderingTime}
                 />
-
-                {/* Delivery Zone Information */}
-                {/* {deliveryDetails && (
-                  <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                    <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
-                    <div className="text-white text-sm space-y-1">
-                      <p><strong>Zone:</strong> {deliveryDetails.name}</p>
-                      <p><strong>Distance:</strong> {deliveryDetails.distanceFromStore?.toFixed(1)} km from store</p>
-                      <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
-                      <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
-                    </div>
-                  </div>
-                )} */}
 
                 {/* Minimum Order Notice */}
                 <OrderSummaryExtras
@@ -462,19 +479,6 @@ const Checkout = () => {
                   isLocationFromGPS={locationFetchedViaGPS}
                   disabled={!isOrderingTime}
                 />
-
-                {/* Delivery Zone Information */}
-                {/* {deliveryDetails && (
-                  <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                    <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
-                    <div className="text-white text-sm space-y-1">
-                      <p><strong>Zone:</strong> {deliveryDetails.name}</p>
-                      <p><strong>Distance:</strong> {deliveryDetails.distanceFromStore?.toFixed(1)} km from store</p>
-                      <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
-                      <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
-                    </div>
-                  </div>
-                )} */}
 
                 {/* Minimum Order Notice */}
                 <OrderSummaryExtras

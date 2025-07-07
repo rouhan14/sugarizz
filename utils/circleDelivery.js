@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { isWithinDeliveryCircles, calculateDistance } from "@/utils/circleUtils";
 import { getDeliveryZoneByDistance } from "@/utils/deliveryZones";
 
@@ -11,7 +11,8 @@ const CircleZoneChecker = ({
   onZoneFound, 
   onZoneNotFound 
 }) => {
-  useEffect(() => {
+  // Memoize the zone checking logic
+  const checkZone = useCallback(() => {
     if (!lat || !lng) return;
 
     // Check if user location is within any delivery circle
@@ -41,7 +42,11 @@ const CircleZoneChecker = ({
     } else {
       onZoneNotFound();
     }
-  }, [lat, lng, storeLocation, onZoneFound, onZoneNotFound]);
+  }, [lat, lng, storeLocation.lat, storeLocation.lng, onZoneFound, onZoneNotFound]);
+
+  useEffect(() => {
+    checkZone();
+  }, [checkZone]);
 
   return null;
 };

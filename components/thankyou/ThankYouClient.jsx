@@ -9,6 +9,8 @@ const ThankYouClient = () => {
     const eta = searchParams.get("eta") || "45-60 minutes";
     const paymentMethod = searchParams.get("paymentMethod") || "Cash on Delivery";
     const totalPrice = searchParams.get("totalPrice") || "0.00";
+    console.log("ThankYouClient mounted");
+
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
