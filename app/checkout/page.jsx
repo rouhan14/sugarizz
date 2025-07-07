@@ -308,7 +308,7 @@ const Checkout = () => {
         {/* Mobile Layout - Order Summary First */}
         <div className="lg:hidden space-y-6">
           {/* ORDER SUMMARY - Mobile First */}
-          <div className="w-full">
+          <div className="w-full flex flex-col items-center">
             <OrderSummary
               paymentMethod={paymentMethod}
               cartItems={cartItems}
