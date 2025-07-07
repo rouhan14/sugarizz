@@ -8,21 +8,20 @@ import ErrorModal from "@/components/errorModal";
 import LocationService from "@/components/locationService";
 import AddressForm from "@/components/checkout/addressForm";
 import OrderSummary from "@/components/orderSummary";
-import { calculateDistance, geocodeAddress } from "@/utils/locationUtils";
-import { getDeliveryDetails } from "@/utils/getDeliveryDetails";
+import { geocodeAddress } from "@/utils/locationUtils";
 import PaymentMethod from "@/components/checkout/PaymentMethod";
 import { useMemo } from "react";
 
 import OrderingStatus from "@/components/checkout/OrderingStatus";
 import CustomerInfo from "@/components/checkout/CustomerInfo";
 import OrderSummaryExtras from "@/components/checkout/OrderSummaryExtras";
+import CircleZoneChecker from "@/utils/circleDelivery";
 
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
-const MAX_DELIVERY_DISTANCE = 20; // Maximum delivery distance in km
 const MINIMUM_ORDER_AMOUNT = 1200; // Minimum order amount in Rs.
-const ORDERING_START_HOUR = 13; // 2 PM in 24-hour format
-const ORDERING_END_HOUR = 23; // 10 PM in 24-hour format
+const ORDERING_START_HOUR = 13; // 1 PM in 24-hour format
+const ORDERING_END_HOUR = 23; // 11 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
 
 const Checkout = () => {
@@ -32,11 +31,8 @@ const Checkout = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [locationFetchedViaGPS, setLocationFetchedViaGPS] = useState(false);
 
-  // Map states
-  const [markerPos, setMarkerPos] = useState(STORE_LOCATION);
-  const [mapCenter, setMapCenter] = useState(STORE_LOCATION);
+  // Delivery states
   const [deliveryDetails, setDeliveryDetails] = useState(null);
-  const [mapKey, setMapKey] = useState(0);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,11 +76,11 @@ const Checkout = () => {
     if (!withinHours) {
       const nextOrdering = new Date(pakistanTime);
       if (currentHour >= ORDERING_END_HOUR) {
-        // After 10 PM, next ordering is tomorrow at 2 PM
+        // After 11 PM, next ordering is tomorrow at 1 PM
         nextOrdering.setDate(nextOrdering.getDate() + 1);
         nextOrdering.setHours(ORDERING_START_HOUR, 0, 0, 0);
       } else {
-        // Before 2 PM, next ordering is today at 2 PM
+        // Before 1 PM, next ordering is today at 1 PM
         nextOrdering.setHours(ORDERING_START_HOUR, 0, 0, 0);
       }
 
@@ -135,36 +131,10 @@ const Checkout = () => {
   const isWithinRange = !!deliveryDetails;
   const meetsMinimumOrder = subtotal >= MINIMUM_ORDER_AMOUNT;
 
-
-
   const showErrorModal = (title, message) => {
     setModalTitle(title);
     setModalMessage(message);
     setIsModalOpen(true);
-  };
-
-  const updateMapLocation = (lat, lng, address = "") => {
-    const newPosition = { lat, lng };
-    setMarkerPos(newPosition);
-    setMapCenter(newPosition);
-    setMapKey(prev => prev + 1);
-
-    if (address) {
-      setResolvedAddress(address);
-    }
-
-    const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
-    const zoneDetails = getDeliveryDetails(distance);
-
-    if (!zoneDetails) {
-      setDeliveryDetails(null);
-      showErrorModal(
-        "Out of Delivery Zone",
-        `This location is ${distance.toFixed(2)} km away. We only deliver within ${MAX_DELIVERY_DISTANCE} km of our store.`
-      );
-    } else {
-      setDeliveryDetails(zoneDetails);
-    }
   };
 
   const handleLocationSuccess = (position) => {
@@ -173,7 +143,6 @@ const Checkout = () => {
 
     // Reverse geocode to get address
     reverseGeocode(latitude, longitude);
-    updateMapLocation(latitude, longitude);
     setLocationFetchedViaGPS(true);
   };
 
@@ -208,7 +177,7 @@ const Checkout = () => {
     try {
       const result = await geocodeAddress(userInputAddress);
       if (result.success) {
-        updateMapLocation(result.lat, result.lng, result.address);
+        setCurrentLocation({ lat: result.lat, lng: result.lng });
         setResolvedAddress(result.address);
       } else {
         showErrorModal("Address Not Found", result.message);
@@ -220,28 +189,9 @@ const Checkout = () => {
     }
   };
 
-  const handleMapMarkerDrag = (lat, lng) => {
-    updateMapLocation(lat, lng);
-    // Reverse geocode the new position
-    reverseGeocode(lat, lng);
-  };
-
   const getDeliveryZoneName = () => {
     if (!deliveryDetails) return "Outside Delivery Zone";
-
-    const distance = calculateDistance(
-      STORE_LOCATION.lat,
-      STORE_LOCATION.lng,
-      currentLocation?.lat || markerPos.lat,
-      currentLocation?.lng || markerPos.lng
-    );
-
-    if (distance <= 5) return "Zone A";
-    if (distance <= 8) return "Zone B";
-    if (distance <= 14) return "Zone C";
-    if (distance <= 17) return "Zone D";
-    if (distance <= 20) return "Zone E";
-    return "Outside Delivery Zone";
+    return deliveryDetails.name;
   };
 
   const handleSubmit = async (e) => {
@@ -251,7 +201,7 @@ const Checkout = () => {
     if (!isOrderingTime) {
       showErrorModal(
         "Ordering Currently Closed",
-        `Orders are only accepted from 2:00 PM to 10:00 PM (Pakistan Time). Please place your order during our business hours. Next ordering time: ${nextOrderingTime}`
+        `Orders are only accepted from 1:00 PM to 11:00 PM (Pakistan Time). Please place your order during our business hours. Next ordering time: ${nextOrderingTime}`
       );
       return;
     }
@@ -265,7 +215,10 @@ const Checkout = () => {
     }
 
     if (!isWithinRange) {
-      showErrorModal("Delivery Zone Error", "Please enter an address within our delivery zone.");
+      showErrorModal(
+        "Delivery Zone Error",
+        "Please enter an address within our delivery zones."
+      );
       return;
     }
 
@@ -283,7 +236,7 @@ const Checkout = () => {
       phoneNumber: formData.get("phone"),
       userInputAddress, // First address - as entered by user
       resolvedAddress, // Second address - resolved/location based
-      coordinates: currentLocation || markerPos,
+      coordinates: currentLocation,
       cookies: cartItems,
       deliveryZone: getDeliveryZoneName(),
       deliveryCharges,
@@ -293,6 +246,7 @@ const Checkout = () => {
       orderTime: new Date().toLocaleString("en-US", { timeZone: PAKISTAN_TIMEZONE }),
       paymentMethod,
       eta: deliveryDetails?.eta || "N/A",
+      distanceFromStore: deliveryDetails?.distanceFromStore || 0,
     };
 
     try {
@@ -318,6 +272,10 @@ const Checkout = () => {
     }
   };
 
+  // Get active position for zone checking
+  const activePosition = currentLocation;
+  const showZoneChecker = activePosition && activePosition.lat && activePosition.lng;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-4 py-8">
       <ErrorModal
@@ -327,123 +285,47 @@ const Checkout = () => {
         message={modalMessage}
       />
 
+      {/* Circle Zone Checker Component */}
+      {showZoneChecker && (
+        <CircleZoneChecker
+          lat={activePosition.lat}
+          lng={activePosition.lng}
+          storeLocation={STORE_LOCATION}
+          onZoneFound={(zone) => {
+            setDeliveryDetails(zone);
+            console.log("Zone found:", zone);
+          }}
+          onZoneNotFound={() => {
+            setDeliveryDetails(null);
+            // Removed modal - just set delivery details to null
+          }}
+        />
+      )}
+
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-white pt-6">Checkout</h1>
-
-        <div className="max-w-6xl mx-auto pb-10">
-          {/* Mobile Layout - Order Summary First */}
-          <div className="lg:hidden space-y-6">
-            {/* ORDER SUMMARY - Mobile First */}
-            <div className="w-full">
-              <OrderSummary
-                paymentMethod={paymentMethod}
-                cartItems={cartItems}
-                subtotal={subtotal}
-                finalPrice={finalPrice}
-                deliveryCharges={deliveryCharges}
-                total={total}
-                isWithinRange={isWithinRange}
-                deliveryDetails={deliveryDetails}
-                meetsMinimumOrder={meetsMinimumOrder}
-                minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
-              />
-            </div>
-
-            {/* FORM - Mobile Second */}
-            <div className="w-full">
-              <div className="w-full max-w-2xl p-4 sm:p-6 sm:p-8 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl transition-all duration-300">
-                {/* Ordering Hours Status */}
-                <OrderingStatus
-                  isOrderingTime={isOrderingTime}
-                  currentTime={currentTime}
-                  nextOrderingTime={nextOrderingTime}
-                />
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Customer Information */}
-
-                  <CustomerInfo isOrderingTime={isOrderingTime} />
-
-                  {/* Payment Method */}
-                  <div className="p-6">
-                    <PaymentMethod
-                      selected={paymentMethod}
-                      onChange={setPaymentMethod}
-                      isOrderingTime={true}
-                    />
-                  </div>
-
-                  {/* Location Services */}
-                  {isOrderingTime && (
-                    <LocationService
-                      onLocationSuccess={handleLocationSuccess}
-                      onLocationError={handleLocationError}
-                    />
-                  )}
-
-                  {/* Address Form */}
-                  <AddressForm
-                    userInputAddress={userInputAddress}
-                    setUserInputAddress={setUserInputAddress}
-                    resolvedAddress={resolvedAddress}
-                    onGeocodeAddress={handleGeocodeUserAddress}
-                    isProcessing={isProcessing}
-                    isLocationFromGPS={locationFetchedViaGPS}
-                    disabled={!isOrderingTime}
-                  />
-
-                  {/* Minimum Order Notice */}
-                  <OrderSummaryExtras
-                    meetsMinimumOrder={meetsMinimumOrder}
-                    MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
-                    subtotal={subtotal}
-                    deliveryDetails={deliveryDetails}
-                    getDeliveryZoneName={getDeliveryZoneName}
-                    isOrderingTime={isOrderingTime}
-                  />
-
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={true}
-                    className={`w-full py-3 px-4 rounded-md text-white font-semibold
-    bg-green-500/70 hover:bg-green-500/40
-    border border-white/20 backdrop-blur-md
-    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
-    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
-    transition-all duration-300
-    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
-                  >
-                    Place Order
-                  </button>
-
-
-                  {/* Order Requirements Status */}
-                  {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
-                    <div className="text-sm text-red-300 text-center">
-                      {!isOrderingTime && "✗ Orders only accepted 2:00 PM - 10:00 PM (Pakistan Time)"}
-                      {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
-                        "✗ Minimum order amount and delivery location required"
-                      )}
-                      {isOrderingTime && !meetsMinimumOrder && isWithinRange && (
-                        "✗ Minimum order amount required"
-                      )}
-                      {isOrderingTime && meetsMinimumOrder && !isWithinRange && (
-                        "✗ Valid delivery location required"
-                      )}
-                    </div>
-                  )}
-                </form>
-              </div>
-            </div>
+        
+        {/* Mobile Layout - Order Summary First */}
+        <div className="lg:hidden space-y-6">
+          {/* ORDER SUMMARY - Mobile First */}
+          <div className="w-full">
+            <OrderSummary
+              paymentMethod={paymentMethod}
+              cartItems={cartItems}
+              subtotal={subtotal}
+              finalPrice={finalPrice}
+              deliveryCharges={deliveryCharges}
+              total={total}
+              isWithinRange={isWithinRange}
+              deliveryDetails={deliveryDetails}
+              meetsMinimumOrder={meetsMinimumOrder}
+              minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
+            />
           </div>
 
-          {/* Desktop Layout - Original Order */}
-          <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
-            {/* LEFT - FORM */}
-            <div className="w-full max-w-2xl backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300">
-
+          {/* FORM - Mobile Second */}
+          <div className="w-full">
+            <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl transition-all duration-300">
               {/* Ordering Hours Status */}
               <OrderingStatus
                 isOrderingTime={isOrderingTime}
@@ -451,20 +333,16 @@ const Checkout = () => {
                 nextOrderingTime={nextOrderingTime}
               />
 
-
               <form onSubmit={handleSubmit} className="space-y-6">
-
                 {/* Customer Information */}
                 <CustomerInfo isOrderingTime={isOrderingTime} />
 
                 {/* Payment Method */}
-                <div className="p-6">
-                  <PaymentMethod
-                    selected={paymentMethod}
-                    onChange={setPaymentMethod}
-                    isOrderingTime={true}
-                  />
-                </div>
+                <PaymentMethod
+                  selected={paymentMethod}
+                  onChange={setPaymentMethod}
+                  isOrderingTime={isOrderingTime}
+                />
 
                 {/* Location Services */}
                 {isOrderingTime && (
@@ -485,6 +363,19 @@ const Checkout = () => {
                   disabled={!isOrderingTime}
                 />
 
+                {/* Delivery Zone Information */}
+                {deliveryDetails && (
+                  <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+                    <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
+                    <div className="text-white text-sm space-y-1">
+                      <p><strong>Zone:</strong> {deliveryDetails.name}</p>
+                      <p><strong>Distance:</strong> {deliveryDetails.distanceFromStore?.toFixed(1)} km from store</p>
+                      <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
+                      <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Minimum Order Notice */}
                 <OrderSummaryExtras
                   meetsMinimumOrder={meetsMinimumOrder}
@@ -498,23 +389,122 @@ const Checkout = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={true}
+                  disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
                   className={`w-full py-3 px-4 rounded-md text-white font-semibold
-    bg-green-500/70 hover:bg-green-500/40
-    border border-white/20 backdrop-blur-md
-    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
-    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
-    transition-all duration-300
-    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+                    bg-green-500/70 hover:bg-green-500/40
+                    border border-white/20 backdrop-blur-md
+                    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
+                    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
+                    transition-all duration-300
+                    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
                 >
-                  Place Order
+                  {isProcessing ? "Processing..." : "Place Order"}
                 </button>
-
 
                 {/* Order Requirements Status */}
                 {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
                   <div className="text-sm text-red-300 text-center">
-                    {!isOrderingTime && "✗ Orders only accepted 2:00 PM - 10:00 PM (Pakistan Time)"}
+                    {!isOrderingTime && "✗ Orders only accepted 1:00 PM - 11:00 PM (Pakistan Time)"}
+                    {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
+                      "✗ Minimum order amount and delivery location required"
+                    )}
+                    {isOrderingTime && !meetsMinimumOrder && isWithinRange && (
+                      "✗ Minimum order amount required"
+                    )}
+                    {isOrderingTime && meetsMinimumOrder && !isWithinRange && (
+                      "✗ Valid delivery location required"
+                    )}
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout - Original Order */}
+        <div className="max-w-6xl mx-auto pb-10">
+          <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
+            {/* LEFT - FORM */}
+            <div className="w-full max-w-2xl backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300">
+              {/* Ordering Hours Status */}
+              <OrderingStatus
+                isOrderingTime={isOrderingTime}
+                currentTime={currentTime}
+                nextOrderingTime={nextOrderingTime}
+              />
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Customer Information */}
+                <CustomerInfo isOrderingTime={isOrderingTime} />
+
+                {/* Payment Method */}
+                <PaymentMethod
+                  selected={paymentMethod}
+                  onChange={setPaymentMethod}
+                  isOrderingTime={isOrderingTime}
+                />
+
+                {/* Location Services */}
+                {isOrderingTime && (
+                  <LocationService
+                    onLocationSuccess={handleLocationSuccess}
+                    onLocationError={handleLocationError}
+                  />
+                )}
+
+                {/* Address Form */}
+                <AddressForm
+                  userInputAddress={userInputAddress}
+                  setUserInputAddress={setUserInputAddress}
+                  resolvedAddress={resolvedAddress}
+                  onGeocodeAddress={handleGeocodeUserAddress}
+                  isProcessing={isProcessing}
+                  isLocationFromGPS={locationFetchedViaGPS}
+                  disabled={!isOrderingTime}
+                />
+
+                {/* Delivery Zone Information */}
+                {deliveryDetails && (
+                  <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+                    <h3 className="text-green-300 font-semibold mb-2">Delivery Information</h3>
+                    <div className="text-white text-sm space-y-1">
+                      <p><strong>Zone:</strong> {deliveryDetails.name}</p>
+                      <p><strong>Distance:</strong> {deliveryDetails.distanceFromStore?.toFixed(1)} km from store</p>
+                      <p><strong>Delivery Charge:</strong> Rs. {deliveryDetails.charge}</p>
+                      <p><strong>Estimated Time:</strong> {deliveryDetails.eta}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Minimum Order Notice */}
+                <OrderSummaryExtras
+                  meetsMinimumOrder={meetsMinimumOrder}
+                  MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
+                  subtotal={subtotal}
+                  deliveryDetails={deliveryDetails}
+                  getDeliveryZoneName={getDeliveryZoneName}
+                  isOrderingTime={isOrderingTime}
+                />
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  className={`w-full py-3 px-4 rounded-md text-white font-semibold
+                    bg-green-500/70 hover:bg-green-500/40
+                    border border-white/20 backdrop-blur-md
+                    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
+                    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
+                    transition-all duration-300
+                    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+                >
+                  {isProcessing ? "Processing..." : "Place Order"}
+                </button>
+
+                {/* Order Requirements Status */}
+                {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
+                  <div className="text-sm text-red-300 text-center">
+                    {!isOrderingTime && "✗ Orders only accepted 1:00 PM - 11:00 PM (Pakistan Time)"}
                     {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
                       "✗ Minimum order amount and delivery location required"
                     )}

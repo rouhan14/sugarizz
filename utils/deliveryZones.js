@@ -6,3 +6,12 @@ export const DELIVERY_ZONES = [
   { maxDistance: 17, charge: 300, eta: "135–150 minutes" },
   { maxDistance: 20, charge: 350, eta: "150–165 minutes" },
 ];
+
+export const getDeliveryZoneByDistance = (distance) => {
+  for (const zone of DELIVERY_ZONES) {
+    if (distance <= zone.maxDistance) {
+      return zone;
+    }
+  }
+  return null; // Outside delivery range
+};
