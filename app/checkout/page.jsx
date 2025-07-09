@@ -406,7 +406,8 @@ const Checkout = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  // disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  disabled={true}
                   className={`w-full py-3 px-4 rounded-md text-white font-semibold
                     bg-green-500/70 hover:bg-green-500/40
                     border border-white/20 backdrop-blur-md
@@ -493,7 +494,8 @@ const Checkout = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  // disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
+                  disabled={true}
                   className={`w-full py-3 px-4 rounded-md text-white font-semibold
                     bg-green-500/70 hover:bg-green-500/40
                     border border-white/20 backdrop-blur-md
