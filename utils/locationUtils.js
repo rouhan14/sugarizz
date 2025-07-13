@@ -18,6 +18,24 @@ export function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
+ * Appends "Lahore" to an address if it's not already present
+ */
+function appendLahoreToAddress(address) {
+  if (!address || !address.trim()) return address;
+  
+  const trimmedAddress = address.trim();
+  const lowerCaseAddress = trimmedAddress.toLowerCase();
+  
+  // Check if "lahore" is already in the address (case-insensitive)
+  if (lowerCaseAddress.includes('lahore')) {
+    return trimmedAddress;
+  }
+  
+  // Append "Lahore" to the address
+  return `${trimmedAddress}, Lahore`;
+}
+
+/**
  * Geocode an address or reverse geocode coordinates
  */
 export async function geocodeAddress(address = null, lat = null, lng = null) {
@@ -25,8 +43,9 @@ export async function geocodeAddress(address = null, lat = null, lng = null) {
     let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${GOOGLE_API_KEY}`;
     
     if (address) {
-      // Forward geocoding
-      url += `&address=${encodeURIComponent(address)}`;
+      // Forward geocoding - automatically append Lahore to the address
+      const addressWithLahore = appendLahoreToAddress(address);
+      url += `&address=${encodeURIComponent(addressWithLahore)}`;
     } else if (lat && lng) {
       // Reverse geocoding
       url += `&latlng=${lat},${lng}`;
