@@ -252,6 +252,14 @@ const Checkout = () => {
       return;
     }
 
+    if (typeof window.fbq !== "undefined") {
+      fbq("track", "InitiateCheckout", {
+        value: total,
+        currency: "PKR",
+      });
+    }
+
+
     setIsProcessing(true);
 
     const formData = new FormData(e.target);
