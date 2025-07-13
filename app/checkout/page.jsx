@@ -253,7 +253,7 @@ const Checkout = () => {
     }
 
     if (typeof window.fbq !== "undefined") {
-      fbq("track", "InitiateCheckout", {
+      fbq("track", "purchase", {
         value: total,
         currency: "PKR",
       });
@@ -273,6 +273,7 @@ const Checkout = () => {
       cookies: cartItems,
       deliveryZone: getDeliveryZoneName(),
       deliveryCharges,
+      finalPrice,
       totalPrice: total,
       estimatedDeliveryTime: deliveryDetails?.eta || "N/A",
       additionalRecommendations: formData.get("recommendations"),
