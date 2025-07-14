@@ -153,7 +153,7 @@ const Checkout = () => {
   const total = subtotal > 0 ? finalPriceWithVoucher + deliveryCharges : 0;
 
   const isWithinRange = !!deliveryDetails;
-  const meetsMinimumOrder = finalPriceWithVoucher >= MINIMUM_ORDER_AMOUNT;
+  const meetsMinimumOrder = subtotal >= MINIMUM_ORDER_AMOUNT;
 
   // Voucher handler - replaces existing voucher if new one is applied
   const handleVoucherChange = (voucher) => {

@@ -1,12 +1,12 @@
 const vouchers = [
   {
     code: "eman93245",
-    name: "Welcome Discount",
-    description: "20% off",
-    discount: 20, // percentage
-    minimumOrder: 1200,
+    name: "Voucher Discount",
+    description: "10% OFF",
+    discount: 10, // percentage
+    minimumOrder: 0,
     isActive: true,
-    expiryDate: "2026-12-31",
+    expiryDate: "2025-07-21",
     usageLimit: null, // null means unlimited
     usedCount: 0
   },
