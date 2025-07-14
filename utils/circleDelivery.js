@@ -58,6 +58,7 @@ const getZoneName = (distance) => {
   if (distance <= 14) return "Zone C";
   if (distance <= 17) return "Zone D";
   if (distance <= 20) return "Zone E";
+  if (distance <= 23) return "Zone F";
   return "Outside Delivery Zone";
 };
 

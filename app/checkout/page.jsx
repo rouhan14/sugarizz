@@ -11,6 +11,7 @@ import OrderSummary from "@/components/orderSummary";
 import { geocodeAddress } from "@/utils/locationUtils";
 import PaymentMethod from "@/components/checkout/PaymentMethod";
 import { useMemo } from "react";
+import { calculateVoucherDiscount } from "@/utils/voucherUtils";
 
 import OrderingStatus from "@/components/checkout/OrderingStatus";
 import CustomerInfo from "@/components/checkout/CustomerInfo";
@@ -46,6 +47,9 @@ const Checkout = () => {
   const [isOrderingTime, setIsOrderingTime] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
   const [nextOrderingTime, setNextOrderingTime] = useState("");
+
+  // Voucher states
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
 
   const router = useRouter();
   const { quantities, resetQuantities } = useCookieStore();
@@ -123,19 +127,38 @@ const Checkout = () => {
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  // Compute discounted price
-  const finalPrice = useMemo(() => {
-    return paymentMethod === "online" ? subtotal * 0.9 : subtotal;
+  // Compute discounted price for payment method
+  const paymentDiscount = useMemo(() => {
+    return paymentMethod === "online" ? Math.round(subtotal * 0.1) : 0;
   }, [paymentMethod, subtotal]);
+
+  const finalPrice = useMemo(() => {
+    return subtotal - paymentDiscount;
+  }, [subtotal, paymentDiscount]);
+
+  // Calculate voucher discount on finalPrice
+  const voucherDiscount = useMemo(() => {
+    return calculateVoucherDiscount(appliedVoucher, finalPrice);
+  }, [appliedVoucher, finalPrice]);
+
+  // Final price after voucher discount
+  const finalPriceWithVoucher = useMemo(() => {
+    return finalPrice - voucherDiscount;
+  }, [finalPrice, voucherDiscount]);
 
   // Fallback to null-safe deliveryCharges
   const deliveryCharges = deliveryDetails?.charge ?? 0;
 
   // Only show total if there's a subtotal > 0
-  const total = subtotal > 0 ? finalPrice + deliveryCharges : 0;
+  const total = subtotal > 0 ? finalPriceWithVoucher + deliveryCharges : 0;
 
   const isWithinRange = !!deliveryDetails;
-  const meetsMinimumOrder = subtotal >= MINIMUM_ORDER_AMOUNT;
+  const meetsMinimumOrder = finalPriceWithVoucher >= MINIMUM_ORDER_AMOUNT;
+
+  // Voucher handler - replaces existing voucher if new one is applied
+  const handleVoucherChange = (voucher) => {
+    setAppliedVoucher(voucher);
+  };
 
   const showErrorModal = (title, message) => {
     setModalTitle(title);
@@ -200,7 +223,6 @@ const Checkout = () => {
     return deliveryDetails.name;
   };
 
-
   const handleZoneFound = useCallback((zone) => {
     setDeliveryDetails(zone);
     console.log("Zone found:", zone);
@@ -259,7 +281,6 @@ const Checkout = () => {
       });
     }
 
-
     setIsProcessing(true);
 
     const formData = new FormData(e.target);
@@ -273,12 +294,21 @@ const Checkout = () => {
       cookies: cartItems,
       deliveryZone: getDeliveryZoneName(),
       deliveryCharges,
+      subtotal,
+      paymentMethod,
+      paymentDiscount,
       finalPrice,
+      appliedVoucher: appliedVoucher ? {
+        code: appliedVoucher.code,
+        discount: appliedVoucher.discount,
+        discountAmount: voucherDiscount
+      } : null,
+      voucherDiscount,
+      finalPriceWithVoucher,
       totalPrice: total,
       estimatedDeliveryTime: deliveryDetails?.eta || "N/A",
       additionalRecommendations: formData.get("recommendations"),
       orderTime: new Date().toLocaleString("en-US", { timeZone: PAKISTAN_TIMEZONE }),
-      paymentMethod,
       eta: deliveryDetails?.eta || "N/A",
       distanceFromStore: deliveryDetails?.distanceFromStore || 0,
     };
@@ -352,13 +382,18 @@ const Checkout = () => {
               paymentMethod={paymentMethod}
               cartItems={cartItems}
               subtotal={subtotal}
+              paymentDiscount={paymentDiscount}
               finalPrice={finalPrice}
+              voucherDiscount={voucherDiscount}
+              finalPriceWithVoucher={finalPriceWithVoucher}
               deliveryCharges={deliveryCharges}
               total={total}
               isWithinRange={isWithinRange}
               deliveryDetails={deliveryDetails}
               meetsMinimumOrder={meetsMinimumOrder}
               minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
+              appliedVoucher={appliedVoucher}
+              onVoucherChange={handleVoucherChange}
             />
           </div>
 
@@ -406,7 +441,7 @@ const Checkout = () => {
                 <OrderSummaryExtras
                   meetsMinimumOrder={meetsMinimumOrder}
                   MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
-                  subtotal={subtotal}
+                  subtotal={finalPriceWithVoucher}
                   deliveryDetails={deliveryDetails}
                   getDeliveryZoneName={getDeliveryZoneName}
                   isOrderingTime={isOrderingTime}
@@ -493,7 +528,7 @@ const Checkout = () => {
                 <OrderSummaryExtras
                   meetsMinimumOrder={meetsMinimumOrder}
                   MINIMUM_ORDER_AMOUNT={MINIMUM_ORDER_AMOUNT}
-                  subtotal={subtotal}
+                  subtotal={finalPriceWithVoucher}
                   deliveryDetails={deliveryDetails}
                   getDeliveryZoneName={getDeliveryZoneName}
                   isOrderingTime={isOrderingTime}
@@ -537,13 +572,18 @@ const Checkout = () => {
               paymentMethod={paymentMethod}
               cartItems={cartItems}
               subtotal={subtotal}
+              paymentDiscount={paymentDiscount}
               finalPrice={finalPrice}
+              voucherDiscount={voucherDiscount}
+              finalPriceWithVoucher={finalPriceWithVoucher}
               deliveryCharges={deliveryCharges}
               total={total}
               isWithinRange={isWithinRange}
               deliveryDetails={deliveryDetails}
               meetsMinimumOrder={meetsMinimumOrder}
               minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
+              appliedVoucher={appliedVoucher}
+              onVoucherChange={handleVoucherChange}
             />
           </div>
         </div>
