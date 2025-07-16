@@ -116,8 +116,8 @@ const OrderSummary = ({
 
         <div className="flex justify-between">
           <span>Delivery Charges:</span>
-          <span className={isWithinRange ? '' : 'text-red-400'}>
-            {isWithinRange ? `Rs. ${deliveryCharges.toLocaleString()}` : 'Not Available'}
+          <span className={isWithinRange ? '' : 'text-yellow-400'}>
+            {isWithinRange ? `Rs. ${deliveryCharges.toLocaleString()}` : 'To be Calculated'}
           </span>
         </div>
 
