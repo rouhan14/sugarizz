@@ -13,7 +13,8 @@ const OrderSummary = ({
   deliveryDetails,
   meetsMinimumOrder,
   minimumOrderAmount,
-  onVoucherChange // New prop to communicate voucher changes to parent
+  onVoucherChange, // New prop to communicate voucher changes to parent
+  locationChecked
 }) => {
   const [appliedVoucher, setAppliedVoucher] = useState(null);
   
@@ -138,7 +139,7 @@ const OrderSummary = ({
         </div>
       )}
 
-      {!isWithinRange && (
+      {!isWithinRange && locationChecked && (
         <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 mb-4 text-red-300">
           <p className="font-medium">⚠️ Outside Delivery Zone</p>
           <p className="text-xs mt-1">

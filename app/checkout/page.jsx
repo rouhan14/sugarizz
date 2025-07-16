@@ -394,6 +394,7 @@ const Checkout = () => {
               minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
               appliedVoucher={appliedVoucher}
               onVoucherChange={handleVoucherChange}
+              locationChecked={!!currentLocation}
             />
           </div>
 
@@ -584,6 +585,7 @@ const Checkout = () => {
               minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
               appliedVoucher={appliedVoucher}
               onVoucherChange={handleVoucherChange}
+              locationChecked={!!currentLocation}
             />
           </div>
         </div>
