@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
           {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 18a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12z" />
           </svg> */}
-          <span>⚠️ Minimum order is Rs. 1200.</span>
+          <span>⚠️ Minimum order is Rs. 1000.</span>
         </div>
         <Navbar />
         <main>{children}</main>
