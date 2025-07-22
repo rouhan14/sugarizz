@@ -275,7 +275,7 @@ const Checkout = () => {
     }
 
     if (typeof window.fbq !== "undefined") {
-      fbq("track", "purchase", {
+      fbq("track", "Purchase", {
         value: total,
         currency: "PKR",
       });
