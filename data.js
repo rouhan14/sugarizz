@@ -7,6 +7,13 @@ const data = [
         bgColor: "#D4DE95"
     },
     {
+        title: "Pistachio Kunafa Cookie",
+        description: "A game-changer: gooey chocolate cookie packed with a sweet, nutty pistachio kunafa filling. East meets treat in every bite.",
+        price: 450,
+        image: "/pistachio.png",
+        bgColor: "#F5E427"
+    },
+    {
         title: "Classic Chocolate Cookie",
         description: "Our OG-crisp on the edges, gooey in the middle, and packed with melty chocolate. It’s a chocolate lover’s dream in every bite.",
         price: 350,
