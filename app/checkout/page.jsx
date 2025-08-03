@@ -377,28 +377,6 @@ const Checkout = () => {
         {/* Mobile Layout - Order Summary First */}
         <div className="lg:hidden space-y-6">
           {/* ORDER SUMMARY - Mobile First */}
-          <div className="w-full flex flex-col items-center">
-            <OrderSummary
-              paymentMethod={paymentMethod}
-              cartItems={cartItems}
-              subtotal={subtotal}
-              paymentDiscount={paymentDiscount}
-              finalPrice={finalPrice}
-              voucherDiscount={voucherDiscount}
-              finalPriceWithVoucher={finalPriceWithVoucher}
-              deliveryCharges={deliveryCharges}
-              total={total}
-              isWithinRange={isWithinRange}
-              deliveryDetails={deliveryDetails}
-              meetsMinimumOrder={meetsMinimumOrder}
-              minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
-              appliedVoucher={appliedVoucher}
-              onVoucherChange={handleVoucherChange}
-              locationChecked={!!currentLocation}
-            />
-          </div>
-
-          {/* FORM - Mobile Second */}
           <div className="w-full">
             <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl transition-all duration-300">
               {/* Ordering Hours Status */}
@@ -481,6 +459,29 @@ const Checkout = () => {
               </form>
             </div>
           </div>
+
+          {/* FORM - Mobile Second */}
+          <div className="w-full flex flex-col items-center">
+            <OrderSummary
+              paymentMethod={paymentMethod}
+              cartItems={cartItems}
+              subtotal={subtotal}
+              paymentDiscount={paymentDiscount}
+              finalPrice={finalPrice}
+              voucherDiscount={voucherDiscount}
+              finalPriceWithVoucher={finalPriceWithVoucher}
+              deliveryCharges={deliveryCharges}
+              total={total}
+              isWithinRange={isWithinRange}
+              deliveryDetails={deliveryDetails}
+              meetsMinimumOrder={meetsMinimumOrder}
+              minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
+              appliedVoucher={appliedVoucher}
+              onVoucherChange={handleVoucherChange}
+              locationChecked={!!currentLocation}
+            />
+          </div>
+          
         </div>
 
         {/* Desktop Layout - Original Order */}
