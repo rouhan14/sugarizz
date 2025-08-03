@@ -81,7 +81,7 @@ const AddressForm = ({
       )}
 
       {/* Address Explanation */}
-      <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-lg p-4">
+{/*       <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-lg p-4">
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0">
             <svg className="w-5 h-5 text-gray-200 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@ const AddressForm = ({
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
