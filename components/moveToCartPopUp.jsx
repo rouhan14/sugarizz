@@ -37,7 +37,7 @@ const MoveToCartPopup = () => {
         <div className="relative w-14 h-14 rounded-full bg-[#0FFF50] flex items-center justify-center text-black shadow-xl cursor-pointer hover:scale-105 transition-all duration-300">
           <FiShoppingCart size={24} />
           {/* Item count badge */}
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-black text-[#0FFF50] rounded-full flex items-center justify-center text-xs font-bold">
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
             {totalItems}
           </div>
         </div>
@@ -54,14 +54,14 @@ const MoveToCartPopup = () => {
           <div className="relative w-16 h-16 rounded-full bg-[#0FFF50] flex items-center justify-center text-black shadow-xl cursor-pointer animate-bounce group-hover:animate-none group-hover:scale-110 transition-all duration-300">
             <FiShoppingCart size={28} />
             {/* Item count badge */}
-            <div className="absolute -top-2 -right-2 w-7 h-7 bg-black text-[#0FFF50] rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
               {totalItems}
             </div>
           </div>
         </Link>
 
         {/* Hover tooltip - text only */}
-        <div className="absolute bottom-2 right-20 opacity-0 group-hover:opacity-100 translate-x-6 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none">
+        <div className="absolute bottom-1 right-20 opacity-0 group-hover:opacity-100 translate-x-6 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none">
           <div className="bg-white text-black px-6 py-3 rounded-2xl shadow-2xl border-2 border-[#0FFF50] min-w-max">
             <div className="flex flex-col text-center">
               <span className="text-sm font-bold text-black">
