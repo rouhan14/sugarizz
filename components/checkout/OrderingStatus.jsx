@@ -21,7 +21,7 @@ export default function OrderingStatus({ isOrderingTime, currentTime, nextOrderi
         <h3
           className={`font-semibold text-sm ${isOrderingTime ? 'text-green-200' : 'text-red-200'}`}
         >
-          {isOrderingTime ? '🟢 Orders Open' : '🔴 Orders Closed'}
+          {isOrderingTime ? 'Orders Open' : 'Orders Closed'}
         </h3>
       </div>
 

@@ -352,7 +352,7 @@ const Checkout = () => {
   // const showZoneChecker = activePosition && activePosition.lat && activePosition.lng;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-2 py-8">
       <ErrorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -371,7 +371,7 @@ const Checkout = () => {
         />
       )}
 
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full lg:px-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-white pt-6">Checkout</h1>
 
         {/* Mobile Layout - Order Summary First */}
