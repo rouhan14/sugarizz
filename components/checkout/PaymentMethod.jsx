@@ -4,15 +4,15 @@ import React from "react";
 
 const PaymentMethod = ({ selected, onChange, isOrderingTime = true }) => {
   const optionClasses = (isActive) =>
-    `rounded-xl p-4 border transition-all duration-300 backdrop-blur-md 
-     ${isOrderingTime
-        ? isActive
-          ? "bg-green-500/10 border-white/30 shadow-[inset_0_0_4px_rgba(255,255,255,0.2),0_4px_10px_rgba(0,128,0,0.2)]"
-          : "bg-white/10 border-white/20 hover:bg-white/20 shadow-md cursor-pointer"
-        : "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"}`;
+  `rounded-xl p-4 border transition-all duration-300 
+   ${isOrderingTime
+      ? isActive
+        ? "bg-green-500/15 border-white/30 shadow-inner"
+        : "bg-white/5 border-white/15 hover:bg-white/10 shadow-sm cursor-pointer"
+      : "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"}`;
 
   return (
-    <div className="w-full backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-6 transition-all duration-300">
+    <div className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-md p-6 transition-all duration-300">
       <h2 className="text-xl font-semibold mb-4 text-white border-b border-white/30 pb-2">
         Payment Method
       </h2>

@@ -13,39 +13,28 @@ const OrderSummary = ({
   deliveryDetails,
   meetsMinimumOrder,
   minimumOrderAmount,
-  onVoucherChange, // New prop to communicate voucher changes to parent
+  onVoucherChange,
   locationChecked
 }) => {
   const [appliedVoucher, setAppliedVoucher] = useState(null);
-  
-  // Calculate payment method discount
+
   const paymentDiscount = paymentMethod === "online" ? subtotal * 0.1 : 0;
-  
-  // Calculate voucher discount (applied after payment discount)
   const voucherDiscount = appliedVoucher ? calculateVoucherDiscount(appliedVoucher, finalPrice) : 0;
-  
-  // Final price after all discounts
   const finalPriceWithVoucher = finalPrice - voucherDiscount;
-  
-  // Total with voucher
   const totalWithVoucher = finalPriceWithVoucher + deliveryCharges;
 
   const handleVoucherApply = (voucher) => {
     setAppliedVoucher(voucher);
-    if (onVoucherChange) {
-      onVoucherChange(voucher);
-    }
+    if (onVoucherChange) onVoucherChange(voucher);
   };
 
   const handleVoucherRemove = () => {
     setAppliedVoucher(null);
-    if (onVoucherChange) {
-      onVoucherChange(null);
-    }
+    if (onVoucherChange) onVoucherChange(null);
   };
 
   return (
-    <div className="w-full max-w-2xl p-6 rounded-2xl backdrop-blur-md bg-white/10 border border-white/20 shadow-[inset_0_0_4px_rgba(255,255,255,0.1),_0_6px_14px_rgba(0,0,0,0.25)] transition-all duration-300 h-fit text-white">
+    <div className="w-full max-w-2xl p-6 rounded-2xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] shadow-md transition-all duration-150 h-fit text-white">
       <h2 className="text-xl font-semibold mb-4 border-b pb-2">
         Order Summary
       </h2>

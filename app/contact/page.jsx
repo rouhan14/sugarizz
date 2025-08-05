@@ -47,7 +47,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] via-[#111827] to-[#0f172a] px-4 py-8">
-      <div className="w-full max-w-2xl backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300">
+      <div className="w-full max-w-2xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-md p-8 transition-all duration-300">
         <h1 className="text-4xl font-bold text-white mb-6 text-center">Contact Us</h1>
         <form onSubmit={handleSubmit} className="space-y-5">
           <input
@@ -88,20 +88,20 @@ export default function ContactPage() {
           ></textarea>
 
           <button
-  type="submit"
-  disabled={loading}
-  className={`
+            type="submit"
+            disabled={loading}
+            className={`
     w-full py-3 rounded-md text-white font-semibold
-    bg-green-500/70 hover:bg-green-500/40
-    border border-white/20 backdrop-blur-md
-    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
-    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
+    bg-green-600 hover:bg-green-500
+    border border-[rgba(255,255,255,0.1)]
+    shadow-sm hover:shadow-md
     transition-all duration-300
     disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer
   `}
->
-  {loading ? "Sending..." : "Send Message"}
-</button>
+          >
+
+            {loading ? "Sending..." : "Send Message"}
+          </button>
 
           {sent && (
             <p className="text-green-400 text-sm mt-2 text-center">

@@ -382,7 +382,7 @@ const Checkout = () => {
 
           {/* FORM - Mobile Second */}
           <div className="w-full">
-            <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl transition-all duration-300">
+            <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-md transition-all duration-300">
               {/* Ordering Hours Status */}
               <OrderingStatus
                 isOrderingTime={isOrderingTime}
@@ -431,24 +431,24 @@ const Checkout = () => {
                 />
 
                 {/* <div className="w-full flex flex-col items-center"> */}
-                  <OrderSummary
-                    paymentMethod={paymentMethod}
-                    cartItems={cartItems}
-                    subtotal={subtotal}
-                    paymentDiscount={paymentDiscount}
-                    finalPrice={finalPrice}
-                    voucherDiscount={voucherDiscount}
-                    finalPriceWithVoucher={finalPriceWithVoucher}
-                    deliveryCharges={deliveryCharges}
-                    total={total}
-                    isWithinRange={isWithinRange}
-                    deliveryDetails={deliveryDetails}
-                    meetsMinimumOrder={meetsMinimumOrder}
-                    minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
-                    appliedVoucher={appliedVoucher}
-                    onVoucherChange={handleVoucherChange}
-                    locationChecked={!!currentLocation}
-                  />
+                <OrderSummary
+                  paymentMethod={paymentMethod}
+                  cartItems={cartItems}
+                  subtotal={subtotal}
+                  paymentDiscount={paymentDiscount}
+                  finalPrice={finalPrice}
+                  voucherDiscount={voucherDiscount}
+                  finalPriceWithVoucher={finalPriceWithVoucher}
+                  deliveryCharges={deliveryCharges}
+                  total={total}
+                  isWithinRange={isWithinRange}
+                  deliveryDetails={deliveryDetails}
+                  meetsMinimumOrder={meetsMinimumOrder}
+                  minimumOrderAmount={MINIMUM_ORDER_AMOUNT}
+                  appliedVoucher={appliedVoucher}
+                  onVoucherChange={handleVoucherChange}
+                  locationChecked={!!currentLocation}
+                />
                 {/* </div> */}
 
                 {/* Submit Button */}
@@ -456,12 +456,12 @@ const Checkout = () => {
                   type="submit"
                   disabled={!isOrderingTime || !isWithinRange || !meetsMinimumOrder || isProcessing}
                   className={`w-full py-3 px-4 rounded-md text-white font-semibold
-                    bg-green-500/70 hover:bg-green-500/40
-                    border border-white/20 backdrop-blur-md
-                    shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)]
-                    hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)]
-                    transition-all duration-300
-                    disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+                  bg-green-500/60 hover:bg-green-500/70
+                  border border-[rgba(255,255,255,0.1)]
+                  shadow-md hover:shadow-lg
+                  transition-all duration-300
+                  disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer`}
+
                 >
                   {isProcessing ? "Processing..." : "Place Order"}
                 </button>
@@ -491,7 +491,7 @@ const Checkout = () => {
         <div className="max-w-6xl mx-auto pb-10">
           <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
             {/* LEFT - FORM */}
-            <div className="w-full max-w-2xl backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300">
+            <div className="w-full max-w-2xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-md p-8 transition-all duration-300">
               {/* Ordering Hours Status */}
               <OrderingStatus
                 isOrderingTime={isOrderingTime}

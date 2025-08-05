@@ -9,9 +9,8 @@ const AddressForm = ({
   isLocationFromGPS
 }) => {
   return (
-    <div className="w-full backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-6 space-y-4 transition-all duration-300">
-
-      <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
+    <div className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-md p-6 space-y-4 transition-all duration-300">
+      <h3 className="text-lg font-semibold text-white border-b border-[rgba(255,255,255,0.1)] pb-2">
         Delivery Address
       </h3>
 
@@ -25,18 +24,25 @@ const AddressForm = ({
             value={userInputAddress}
             onChange={(e) => setUserInputAddress(e.target.value)}
             placeholder="Enter your complete delivery address (house number, street, area, city, etc.)"
-            className="w-full bg-white/10 border border-white/30 backdrop-blur-md p-3 rounded-md text-white placeholder-white/60 focus:ring-2 focus:ring-green-400 focus:border-transparent resize-none transition-all"
+            className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] p-3 rounded-md text-white placeholder-white/60 focus:ring-2 focus:ring-green-400 focus:border-transparent resize-none transition-all"
             rows={3}
             required
           />
 
-          {/* Only show verify button if location is NOT from GPS */}
+          {/* Verify Button */}
           {!isLocationFromGPS && (
             <button
               type="button"
               onClick={onGeocodeAddress}
               disabled={isProcessing || !userInputAddress.trim()}
-              className="w-full bg-green-500/70 hover:bg-green-500/40 border border-white/20 backdrop-blur-md text-white px-4 py-2 rounded-md shadow-[inset_0_0_4px_rgba(255,255,255,0.2),_0_4px_10px_rgba(0,128,0,0.35)] hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.25),_0_6px_14px_rgba(0,128,0,0.45)] transition-all duration-300 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full bg-green-500/50 hover:bg-green-500/30 
+              border border-white/10 text-white px-4 py-2 rounded-md 
+              shadow-[inset_0_0_4px_rgba(255,255,255,0.1),_0_4px_10px_rgba(0,128,0,0.2)] 
+              hover:shadow-[inset_0_0_6px_rgba(255,255,255,0.15),_0_6px_14px_rgba(0,128,0,0.3)] 
+              transition-all duration-300 font-medium 
+              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none 
+              cursor-pointer"
+
             >
               {isProcessing ? (
                 <>
@@ -61,7 +67,7 @@ const AddressForm = ({
 
       {/* Resolved Address Display */}
       {resolvedAddress && (
-        <div className="bg-green-500/10 border border-green-400/30 backdrop-blur-md rounded-lg p-4">
+        <div className="bg-[rgba(0,255,0,0.05)] border border-[rgba(0,255,0,0.2)] rounded-lg p-4">
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
               <svg className="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,8 +86,9 @@ const AddressForm = ({
         </div>
       )}
 
-      {/* Address Explanation */}
-{/*       <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-lg p-4">
+      {/* Optional: Re-enable if needed */}
+      {/*
+      <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg p-4">
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0">
             <svg className="w-5 h-5 text-gray-200 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +106,8 @@ const AddressForm = ({
             </ul>
           </div>
         </div>
-      </div> */}
+      </div>
+      */}
     </div>
   );
 };

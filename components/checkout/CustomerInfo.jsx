@@ -4,10 +4,8 @@ import React from "react";
 
 export default function CustomerInfo({ isOrderingTime }) {
   return (
-    <div
-      className="space-y-4 w-full rounded-2xl p-6 backdrop-blur-md bg-white/10 
-                 border border-white/20 shadow-2xl transition-all duration-300"
-    >
+    <div className="space-y-4 w-full rounded-2xl p-6 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] shadow-md transition-all duration-300">
+
       <h2 className="text-xl font-semibold text-white border-b pb-2">
         Customer Information
       </h2>
@@ -21,10 +19,9 @@ export default function CustomerInfo({ isOrderingTime }) {
           name="name"
           required
           disabled={!isOrderingTime}
-          className="w-full border border-white/20 bg-white/20 backdrop-blur-sm 
-                     text-white placeholder-white/70 p-3 rounded-md 
-                     focus:ring-2 focus:ring-green-400 focus:outline-none 
-                     disabled:bg-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition"
+          className="w-full border border-white/20 bg-white/10 text-white placeholder-white/70 p-3 rounded-md 
+             focus:ring-2 focus:ring-green-400 focus:outline-none 
+             disabled:bg-white/5 disabled:text-white/40 disabled:cursor-not-allowed transition"
           placeholder="Enter your full name"
         />
       </div>
@@ -38,10 +35,9 @@ export default function CustomerInfo({ isOrderingTime }) {
           name="email"
           required
           disabled={!isOrderingTime}
-          className="w-full border border-white/20 bg-white/20 backdrop-blur-sm 
-                     text-white placeholder-white/70 p-3 rounded-md 
-                     focus:ring-2 focus:ring-green-400 focus:outline-none 
-                     disabled:bg-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition"
+          className="w-full border border-white/20 bg-white/10 text-white placeholder-white/70 p-3 rounded-md 
+             focus:ring-2 focus:ring-green-400 focus:outline-none 
+             disabled:bg-white/5 disabled:text-white/40 disabled:cursor-not-allowed transition"
           placeholder="your@email.com"
         />
       </div>
@@ -55,10 +51,9 @@ export default function CustomerInfo({ isOrderingTime }) {
           name="phone"
           required
           disabled={!isOrderingTime}
-          className="w-full border border-white/20 bg-white/20 backdrop-blur-sm 
-                     text-white placeholder-white/70 p-3 rounded-md 
-                     focus:ring-2 focus:ring-green-400 focus:outline-none 
-                     disabled:bg-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition"
+          className="w-full border border-white/20 bg-white/10 text-white placeholder-white/70 p-3 rounded-md 
+             focus:ring-2 focus:ring-green-400 focus:outline-none 
+             disabled:bg-white/5 disabled:text-white/40 disabled:cursor-not-allowed transition"
           placeholder="e.g. 0301-1234567"
         />
       </div>

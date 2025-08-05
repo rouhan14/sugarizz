@@ -5,15 +5,13 @@ import React from "react";
 export default function OrderingStatus({ isOrderingTime, currentTime, nextOrderingTime }) {
   return (
     <div
-      className={`
-        mb-6 p-4 rounded-xl w-full
-        border border-white/20
-        backdrop-blur-md
-        ${isOrderingTime ? 'bg-green-500/10' : 'bg-red-500/10'}
-        shadow-[inset_0_0_6px_rgba(255,255,255,0.1),_0_4px_12px_rgba(0,0,0,0.2)]
-        transition-all duration-300
-      `}
-    >
+  className={`
+    mb-6 p-4 rounded-xl w-full
+    border border-[rgba(255,255,255,0.15)]
+    ${isOrderingTime ? 'bg-green-500/15' : 'bg-red-500/15'}
+    shadow-md transition-all duration-300
+  `}
+>
       <div className="flex items-center gap-2 mb-2">
         <span
           className={`w-3 h-3 rounded-full ${isOrderingTime ? 'bg-green-400' : 'bg-red-400'}`}

@@ -76,13 +76,13 @@ const VoucherInput = ({
                         onKeyPress={handleKeyPress}
                         placeholder="Enter voucher code"
                         disabled={disabled || isValidating}
-                        className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-white/40 disabled:opacity-50"
+                        className="w-full px-3 py-2 text-sm text-white placeholder-gray-400 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-md focus:outline-none focus:border-white/30 disabled:opacity-50"
                     />
                     <button
                         type="button"
                         onClick={handleApplyVoucher}
                         disabled={disabled || isValidating || !voucherCode.trim()}
-                        className="w-full px-4 py-2 text-sm bg-blue-500/70 hover:bg-blue-500/80 text-white rounded-md border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="w-full px-4 py-2 text-sm text-white bg-blue-500/70 hover:bg-blue-500/80 border border-[rgba(255,255,255,0.1)] rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isValidating ? 'Applying...' : 'Apply'}
                     </button>
@@ -105,16 +105,18 @@ const VoucherInput = ({
             )}
 
             {validationMessage && (
-                <div className={`text-xs p-2 rounded ${messageType === 'success'
-                        ? 'bg-green-500/10 text-green-300 border border-green-500/30'
-                        : 'bg-red-500/10 text-red-300 border border-red-500/30'
-                    }`}>
+                <div
+                    className={`text-xs p-2 rounded transition-colors duration-300 ${
+                        messageType === 'success'
+                            ? 'bg-green-500/10 text-green-300 border border-green-500/30'
+                            : 'bg-red-500/10 text-red-300 border border-red-500/30'
+                    }`}
+                >
                     {validationMessage}
                 </div>
             )}
         </div>
     );
-
 };
 
 export default VoucherInput;
