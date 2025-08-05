@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import VoucherInput from '../components/voucherInput';
 import { calculateVoucherDiscount } from '@/utils/voucherUtils';
+import { HiCheckCircle } from "react-icons/hi";
 
 const OrderSummary = ({
   paymentMethod,
@@ -120,31 +121,82 @@ const OrderSummary = ({
 
       {/* Status Messages */}
       {!meetsMinimumOrder && (
-        <div className="bg-orange-500/10 border border-orange-500/30 rounded-md p-3 mb-4 text-orange-300">
-          <p className="font-medium">⚠️ Minimum Order Required</p>
-          <p className="text-xs mt-1">
+        <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4 mb-4 text-orange-100">
+          <div className="flex items-center gap-2 mb-1">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="yellow"
+            >
+              <path
+                d="M1 21h22L12 2 1 21z"
+                stroke="yellow"
+                strokeWidth="1"
+              />
+              <text
+                x="12"
+                y="17"
+                textAnchor="middle"
+                fontSize="14"
+                fill="black"
+                fontWeight="bold"
+              >
+                !
+              </text>
+            </svg>
+            <p className="font-medium text-orange-200">Minimum Order Required</p>
+          </div>
+          <p className="text-xs text-orange-300">
             Add Rs. {(minimumOrderAmount - finalPriceWithVoucher).toLocaleString()} more to meet minimum order of Rs. {minimumOrderAmount.toLocaleString()}
           </p>
         </div>
       )}
 
       {!isWithinRange && locationChecked && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 mb-4 text-red-300">
-          <p className="font-medium">⚠️ Outside Delivery Zone</p>
-          <p className="text-xs mt-1">
+        <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-4 text-red-100">
+          <div className="flex items-center gap-2 mb-1">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="yellow"
+            >
+              <path
+                d="M1 21h22L12 2 1 21z"
+                stroke="yellow"
+                strokeWidth="1"
+              />
+              <text
+                x="12"
+                y="17"
+                textAnchor="middle"
+                fontSize="14"
+                fill="black"
+                fontWeight="bold"
+              >
+                !
+              </text>
+            </svg>
+            <p className="font-medium text-red-200">Outside Delivery Zone</p>
+          </div>
+          <p className="text-xs text-red-300">
             Please enter an address within our delivery areas
           </p>
         </div>
       )}
 
       {deliveryDetails && isWithinRange && meetsMinimumOrder && (
-        <div className="bg-green-500/10 border border-green-500/30 rounded-md p-3 mb-4 text-green-300">
-          <p className="font-medium">✅ Ready to Order</p>
-          <p className="text-xs mt-1">
-            Your order will be delivered in {deliveryDetails.eta}
-          </p>
-        </div>
-      )}
+  <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-4 mb-4 text-green-100">
+    <div className="flex items-center gap-2 mb-1">
+      <HiCheckCircle className="text-green-400 w-5 h-5" />
+      <p className="font-medium text-green-200">Ready to Order</p>
+    </div>
+    <p className="text-xs text-green-300">
+      Your order will be delivered in {deliveryDetails.eta}
+    </p>
+  </div>
+)}
 
       {/* Total */}
       <div className="border-t border-white/10 pt-4">

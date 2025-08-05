@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { IoWarning } from "react-icons/io5";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import Script from "next/script";
@@ -72,12 +73,31 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-[#242833] via-[#2d3142] to-[#1a1d29]`}
       >
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex items-center justify-center gap-2">
-          {/* Alert Icon SVG */}
-          {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 18a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12z" />
-          </svg> */}
-          <span>⚠️ Minimum order: Rs. 1000</span>
+          <svg
+            viewBox="0 0 24 24"
+            className="w-5 h-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="yellow"
+          >
+            <path
+              d="M1 21h22L12 2 1 21z"
+              stroke="yellow"
+              strokeWidth="1"
+            />
+            <text
+              x="12"
+              y="17"
+              textAnchor="middle"
+              fontSize="14"
+              fill="black"
+              fontWeight="bold"
+            >
+              !
+            </text>
+          </svg>
+          <span>Minimum order: Rs. 1000</span>
         </div>
+
         <Navbar />
         <main>{children}</main>
       </body>

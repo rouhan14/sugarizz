@@ -1,4 +1,5 @@
 import React from 'react';
+import { HiCheckCircle } from "react-icons/hi";
 
 const AddressForm = ({
   userInputAddress,
@@ -54,9 +55,6 @@ const AddressForm = ({
                 </>
               ) : (
                 <>
-                  <svg className="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4V17m-6-3l6 3" />
-                  </svg>
                   Verify Address & Check Delivery Zone
                 </>
               )}
@@ -70,9 +68,7 @@ const AddressForm = ({
         <div className="bg-[rgba(0,255,0,0.05)] border border-[rgba(0,255,0,0.2)] rounded-lg p-4">
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
-              <svg className="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <HiCheckCircle className="text-green-400 w-5 h-5" />
             </div>
             <div className="flex-1">
               <h4 className="text-sm font-medium text-green-200 mb-1">
