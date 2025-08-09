@@ -25,7 +25,7 @@ export default function OrderingStatus({ isOrderingTime, currentTime, nextOrderi
 
       <div className={`text-sm space-y-1 ${isOrderingTime ? 'text-green-100' : 'text-red-100'}`}>
         <p><strong>Current Time (Pakistan):</strong> {currentTime}</p>
-        <p><strong>Ordering Hours:</strong> 1:00 PM - 11:00 PM (Pakistan Time)</p>
+        <p><strong>Ordering Hours:</strong> 12:00 PM - 11:00 PM (Pakistan Time)</p>
         {!isOrderingTime && (
           <p><strong>Next Available:</strong> {nextOrderingTime}</p>
         )}
