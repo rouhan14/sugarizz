@@ -21,7 +21,7 @@ import CircleZoneChecker from "@/utils/circleDelivery";
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
 const MINIMUM_ORDER_AMOUNT = 1000; // Minimum order amount in Rs.
-const ORDERING_START_HOUR = 13; // 1 PM in 24-hour format
+const ORDERING_START_HOUR = 12; // 12 PM in 24-hour format
 const ORDERING_END_HOUR = 23; // 11 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
 
@@ -248,7 +248,7 @@ const Checkout = () => {
     if (!isOrderingTime) {
       showErrorModal(
         "Ordering Currently Closed",
-        `Orders are only accepted from 1:00 PM to 11:00 PM (Pakistan Time). Please place your order during our business hours. Next ordering time: ${nextOrderingTime}`
+        `Orders are only accepted from 12:00 PM to 11:00 PM (Pakistan Time). Please place your order during our business hours. Next ordering time: ${nextOrderingTime}`
       );
       return;
     }
@@ -469,7 +469,7 @@ const Checkout = () => {
                 {/* Order Requirements Status */}
                 {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
                   <div className="text-sm text-red-300 text-center">
-                    {!isOrderingTime && "✗ Orders only accepted 1:00 PM - 11:00 PM (Pakistan Time)"}
+                    {!isOrderingTime && "✗ Orders only accepted 12:00 PM - 11:00 PM (Pakistan Time)"}
                     {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
                       "✗ Minimum order amount and delivery location required"
                     )}
@@ -557,7 +557,7 @@ const Checkout = () => {
                 {/* Order Requirements Status */}
                 {(!meetsMinimumOrder || !isWithinRange || !isOrderingTime) && (
                   <div className="text-sm text-red-300 text-center">
-                    {!isOrderingTime && "✗ Orders only accepted 1:00 PM - 11:00 PM (Pakistan Time)"}
+                    {!isOrderingTime && "✗ Orders only accepted 12:00 PM - 11:00 PM (Pakistan Time)"}
                     {isOrderingTime && !meetsMinimumOrder && !isWithinRange && (
                       "✗ Minimum order amount and delivery location required"
                     )}
