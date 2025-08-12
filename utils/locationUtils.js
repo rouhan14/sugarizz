@@ -1,7 +1,4 @@
 // utils/locationUtils.js
-import axios from "axios";
-
-const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
 /**
  * Calculate distance between two coordinates using Haversine formula
@@ -18,65 +15,37 @@ export function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * Appends "Lahore" to an address if it's not already present
- */
-function appendLahoreToAddress(address) {
-  if (!address || !address.trim()) return address;
-  
-  const trimmedAddress = address.trim();
-  const lowerCaseAddress = trimmedAddress.toLowerCase();
-  
-  // Check if "lahore" is already in the address (case-insensitive)
-  if (lowerCaseAddress.includes('lahore')) {
-    return trimmedAddress;
-  }
-  
-  // Append "Lahore" to the address
-  return `${trimmedAddress}, Lahore`;
-}
-
-/**
- * Geocode an address or reverse geocode coordinates
+ * Geocode an address or reverse geocode coordinates using server-side API
  */
 export async function geocodeAddress(address = null, lat = null, lng = null) {
   try {
-    let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${GOOGLE_API_KEY}`;
-    
-    if (address) {
-      // Forward geocoding - automatically append Lahore to the address
-      const addressWithLahore = appendLahoreToAddress(address);
-      url += `&address=${encodeURIComponent(addressWithLahore)}`;
-    } else if (lat && lng) {
-      // Reverse geocoding
-      url += `&latlng=${lat},${lng}`;
-    } else {
+    if (!address && (!lat || !lng)) {
       throw new Error("Either address or coordinates must be provided");
     }
 
-    const response = await axios.get(url);
-    const results = response.data.results;
+    const response = await fetch('/api/geocode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ address, lat, lng }),
+    });
 
-    if (!results || results.length === 0) {
+    const data = await response.json();
+
+    if (!response.ok) {
       return {
         success: false,
-        message: "Address not found. Please try a different address."
+        message: data.message || "Unable to geocode address"
       };
     }
 
-    const result = results[0];
-    const location = result.geometry.location;
-
     if (address) {
-      // Return geocoded coordinates and formatted address
-      return {
-        success: true,
-        lat: location.lat,
-        lng: location.lng,
-        address: result.formatted_address
-      };
+      // Return geocoded coordinates and formatted address for forward geocoding
+      return data;
     } else {
       // Return formatted address for reverse geocoding
-      return result.formatted_address;
+      return data.address;
     }
   } catch (error) {
     console.error("Geocoding error:", error);
