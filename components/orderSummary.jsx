@@ -19,7 +19,7 @@ const OrderSummary = ({
 }) => {
   const [appliedVoucher, setAppliedVoucher] = useState(null);
 
-  const paymentDiscount = paymentMethod === "online" ? subtotal * 0.1 : 0;
+  const paymentDiscount = paymentMethod === "online" ? subtotal * 0.14 : 0;
   const voucherDiscount = appliedVoucher ? calculateVoucherDiscount(appliedVoucher, finalPrice) : 0;
   const finalPriceWithVoucher = finalPrice - voucherDiscount;
   const totalWithVoucher = finalPriceWithVoucher + deliveryCharges;
@@ -82,7 +82,7 @@ const OrderSummary = ({
 
         {paymentMethod !== 'cod' && (
           <div className="flex justify-between text-green-300 text-sm">
-            <span>Payment Method Discount (10%):</span>
+            <span>Payment Method Discount (14%):</span>
             <span>-Rs. {paymentDiscount.toLocaleString()}</span>
           </div>
         )}

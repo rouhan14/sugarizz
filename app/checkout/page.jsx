@@ -129,7 +129,7 @@ const Checkout = () => {
 
   // Compute discounted price for payment method
   const paymentDiscount = useMemo(() => {
-    return paymentMethod === "online" ? Math.round(subtotal * 0.1) : 0;
+    return paymentMethod === "online" ? Math.round(subtotal * 0.14) : 0;
   }, [paymentMethod, subtotal]);
 
   const finalPrice = useMemo(() => {

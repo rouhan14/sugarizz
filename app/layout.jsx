@@ -65,37 +65,43 @@ export default function RootLayout({ children }) {
             height="1"
             width="1"
             style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=738614225291126&ev=PageView&noscript=1"
           />
         </noscript>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-[#242833] via-[#2d3142] to-[#1a1d29]`}
       >
-        <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex items-center justify-center gap-2">
-          <svg
-            viewBox="0 0 24 24"
-            className="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="yellow"
-          >
-            <path
-              d="M1 21h22L12 2 1 21z"
-              stroke="yellow"
-              strokeWidth="1"
-            />
-            <text
-              x="12"
-              y="17"
-              textAnchor="middle"
-              fontSize="14"
-              fill="black"
-              fontWeight="bold"
+        <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex flex-col items-center justify-center gap-1">
+          <div className="flex items-center gap-2">
+            <img src="/pakistan.png" alt="Pakistan Flag" className="w-6 h-6" />
+            <span>14% OFF - Online Payment - Independence Day Sale</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="yellow"
             >
-              !
-            </text>
-          </svg>
-          <span>Minimum order: Rs. 1000</span>
+              <path
+                d="M1 21h22L12 2 1 21z"
+                stroke="yellow"
+                strokeWidth="1"
+              />
+              <text
+                x="12"
+                y="17"
+                textAnchor="middle"
+                fontSize="14"
+                fill="black"
+                fontWeight="bold"
+              >
+                !
+              </text>
+            </svg>
+            <span>Minimum order: Rs. 1000</span>
+          </div>
         </div>
 
         <Navbar />
