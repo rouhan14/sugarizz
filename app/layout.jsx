@@ -73,10 +73,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-[#242833] via-[#2d3142] to-[#1a1d29]`}
       >
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex flex-col items-center justify-center gap-1">
-          <div className="flex items-center gap-2">
-            <img src="/pakistan.png" alt="Pakistan Flag" className="w-6 h-6" />
-            <span>14% OFF - Online Payment - Independence Day Sale</span>
-          </div>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-center px-2">
+          <img src="/pakistan.png" alt="Pakistan Flag" className="w-6 h-6 flex-shrink-0" />
+          <span className="whitespace-normal leading-snug text-sm">
+            14% OFF – Independence Day Sale
+          </span>
+        </div>
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
