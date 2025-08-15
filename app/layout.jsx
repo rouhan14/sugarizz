@@ -74,10 +74,10 @@ export default function RootLayout({ children }) {
       >
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex flex-col items-center justify-center gap-1">
           <div className="flex flex-wrap items-center justify-center gap-2 text-center px-2">
-          <img src="/pakistan.png" alt="Pakistan Flag" className="w-6 h-6 flex-shrink-0" />
-          <span className="whitespace-normal leading-snug text-sm">
+          {/* <img src="/pakistan.png" alt="Pakistan Flag" className="w-6 h-6 flex-shrink-0" /> */}
+          {/* <span className="whitespace-normal leading-snug text-sm">
             14% OFF – Independence Day Sale
-          </span>
+          </span> */}
         </div>
           <div className="flex items-center gap-2">
             <svg

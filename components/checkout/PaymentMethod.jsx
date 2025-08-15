@@ -47,7 +47,7 @@ const PaymentMethod = ({ selected, onChange, isOrderingTime = true }) => {
               className="w-4 h-4 accent-green-500"
             />
             <span className="font-medium">
-              Online Payment – <span className="text-green-300 font-semibold">14% OFF</span>
+              Online Payment – <span className="text-green-300 font-semibold">10% OFF</span>
             </span>
           </label>
 
