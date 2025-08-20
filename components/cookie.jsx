@@ -21,7 +21,7 @@ export default function CookieHero({
     const quantity = quantities[title] || 0;
     
     // Check if this cookie is out of stock
-    const isOutOfStock = title === "";
+    const isOutOfStock = title === "Double Chocolate Cookie";
 
     useEffect(() => {
         const handleResize = () => {
