@@ -21,7 +21,7 @@ export default function CookieHero({
     const quantity = quantities[title] || 0;
     
     // Check if this cookie is out of stock
-    const isOutOfStock = title === "Red Velvet Cookie" || title === "Pistachio Kunafa Cookie";
+    const isOutOfStock = title === "Red Velvet Cookie" || title === "Pistachio Kunafa Cookie" || title === "Cookie & Cream Cookie";
 
     useEffect(() => {
         const handleResize = () => {
