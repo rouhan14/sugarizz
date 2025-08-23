@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { IoWarning } from "react-icons/io5";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import Script from "next/script";
 
 const geistSans = Geist({
@@ -70,7 +71,7 @@ export default function RootLayout({ children }) {
         </noscript>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-[#242833] via-[#2d3142] to-[#1a1d29]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-[#242833] via-[#2d3142] to-[#1a1d29] flex flex-col min-h-screen`}
       >
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black text-center py-2 text-md font-bold flex flex-col items-center justify-center gap-1">
           <div className="flex flex-wrap items-center justify-center gap-2 text-center px-2">
@@ -107,7 +108,8 @@ export default function RootLayout({ children }) {
         </div>
 
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
