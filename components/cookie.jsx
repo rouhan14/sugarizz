@@ -67,7 +67,7 @@ export default function CookieHero({
                     } items-center gap-8 md:gap-12 w-full relative z-10`}
             >
                 {/* Image */}
-                <div className={`relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] z-20 md:scale-130 ${flip? "ml-[2rem]":"mr-[2rem]"}`}>
+                <div className={`relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] z-20 scale-110 md:scale-130 ${flip? "md:ml-[2rem]":"md:mr-[2rem]"}`}>
                     <Image
                         src={image}
                         alt={`Image of ${title}`}
@@ -79,17 +79,17 @@ export default function CookieHero({
 
                 {/* Text */}
 
-                <div className={`text-center md:text-left max-w-md ${flip? "justify-end":"justify-start"}` }>
+                <div className={`text-center ${flip ? "md:text-right" : "md:text-left"} max-w-md flex flex-col ${flip ? "md:items-end" : "md:items-start"} items-center`}>
 
-                    <h1 className={`text-3xl md:text-4xl font-extrabold ${flip? "text-right":"text-left"} ${hovered && isDesktop ? "text-black" : "text-white"}`}>
+                    <h1 className={`text-3xl md:text-4xl font-extrabold text-center ${flip ? "md:text-right" : "md:text-left"} ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                         {title}
                     </h1>
-                    <p className={`mt-3 md:mt-4 text-sm md:text-base ${flip? "text-right":"text-left"} ${hovered && isDesktop ? "text-black/80" : "text-white/80"}`}>
+                    <p className={`mt-3 md:mt-4 text-sm md:text-base text-center ${flip ? "md:text-right" : "md:text-left"} ${hovered && isDesktop ? "text-black/80" : "text-white/80"}`}>
                         {description}
                     </p>
-                    <div className={`flex items-center  gap-2 mt-4  ${flip? "justify-end":"justify-start"}`}>
+                    <div className={`flex items-center gap-2 mt-4 justify-center ${flip ? "md:justify-end" : "md:justify-start"}`}>
                         {isOutOfStock ? (
-                            <div className="flex flex-col items-center md:items-start gap-1">
+                            <div className="flex flex-col items-center gap-1">
                                 <div className="flex items-center gap-2">
                                     <h6 className={`text-2xl md:text-2xl font-bold ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                                         {price}
@@ -110,7 +110,7 @@ export default function CookieHero({
                         )}
                     </div>
 
-                    <div className={`mt-5 flex gap-4 ${flip? "justify-end":"justify-start"} w-full`}>
+                    <div className={`mt-5 flex gap-4 justify-center ${flip ? "md:justify-end" : "md:justify-start"} w-full`}>
                         <div className="relative min-w-[120px]">
                             <div className="transition-all duration-300 ease-in-out">
                                 {isOutOfStock ? (
