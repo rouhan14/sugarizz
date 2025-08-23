@@ -30,7 +30,7 @@ export function Navbar() {
   }, [pathname]);
 
   return (
-    <nav className="w-full px-4 py-2 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md text-white sticky top-0 z-50 transition-all duration-300">
+    <nav className="w-full px-4 py-0 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md text-white sticky top-0 z-50 transition-all duration-300">
       <div className="flex justify-between items-center w-[80%] mx-auto">
 
         {/* Mobile Cart Button */}
@@ -78,11 +78,11 @@ export function Navbar() {
         <div className="flex justify-center items-center flex-1 ml-2 sm:ml-0">
           <Link href="/" className="text-xl font-bold">
             <Image
-              src="/logo3.png"
+              src="/sg-horizontal.png"
               alt="Logo"
               width={130}
               height={300}
-              className="w-28 sm:w-32 object-contain"
+              className="w-28 sm:w-32 object-contain scale-120"
               priority
             />
           </Link>

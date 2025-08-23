@@ -13,6 +13,7 @@ export default function CookieHero({
     image,
     bgColor,
     flip,
+
 }) {
     const [hovered, setHovered] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
@@ -66,7 +67,7 @@ export default function CookieHero({
                     } items-center gap-8 md:gap-12 w-full relative z-10`}
             >
                 {/* Image */}
-                <div className="relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] z-20">
+                <div className={`relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] z-20 md:scale-130 ${flip? "ml-[2rem]":"mr-[2rem]"}`}>
                     <Image
                         src={image}
                         alt={`Image of ${title}`}
@@ -78,15 +79,15 @@ export default function CookieHero({
 
                 {/* Text */}
 
-                <div className="text-center md:text-left max-w-md">
+                <div className={`text-center md:text-left max-w-md ${flip? "justify-end":"justify-start"}` }>
 
-                    <h1 className={`text-3xl md:text-4xl font-extrabold ${hovered && isDesktop ? "text-black" : "text-white"}`}>
+                    <h1 className={`text-3xl md:text-4xl font-extrabold ${flip? "text-right":"text-left"} ${hovered && isDesktop ? "text-black" : "text-white"}`}>
                         {title}
                     </h1>
-                    <p className={`mt-3 md:mt-4 text-sm md:text-base ${hovered && isDesktop ? "text-black/80" : "text-white/80"}`}>
+                    <p className={`mt-3 md:mt-4 text-sm md:text-base ${flip? "text-right":"text-left"} ${hovered && isDesktop ? "text-black/80" : "text-white/80"}`}>
                         {description}
                     </p>
-                    <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
+                    <div className={`flex items-center  gap-2 mt-4  ${flip? "justify-end":"justify-start"}`}>
                         {isOutOfStock ? (
                             <div className="flex flex-col items-center md:items-start gap-1">
                                 <div className="flex items-center gap-2">
@@ -109,7 +110,7 @@ export default function CookieHero({
                         )}
                     </div>
 
-                    <div className="mt-5 flex gap-4 justify-center md:justify-start">
+                    <div className={`mt-5 flex gap-4 ${flip? "justify-end":"justify-start"} w-full`}>
                         <div className="relative min-w-[120px]">
                             <div className="transition-all duration-300 ease-in-out">
                                 {isOutOfStock ? (
