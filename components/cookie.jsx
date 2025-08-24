@@ -22,7 +22,7 @@ export default function CookieHero({
     const quantity = quantities[title] || 0;
     
     // Check if this cookie is out of stock
-    const isOutOfStock = title === "Peanut Butter Cookie" || title === "HazelNut Chocolate Cookie" || title === "Cookie & Cream Cookie" || title === "Red Velvet Cookie";
+    const isOutOfStock = title === "Red Velvet Cookie";
 
     useEffect(() => {
         const handleResize = () => {
