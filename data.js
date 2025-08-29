@@ -21,18 +21,18 @@ const data = [
         bgColor: "#FAF9F6"
     },
     {
-        title: "Classic Chocolate Cookie",
-        description: "Our OG-crisp on the edges, gooey in the middle, and packed with melty chocolate. It’s a chocolate lover’s dream in every bite.",
-        price: 350,
-        image: "/classicchocolate.png",
-        bgColor: "#FFD59A"
-    },
-    {
         title: "Cookie & Cream Cookie",
         description: "A rich, fudgy cookie loaded with chunks of real cookies & cream. Gooey, nostalgic, and made to hit that sweet spot every time.",
         price: 350,
         image: "/cookieandcream.png",
         bgColor: "#E3C6FF"
+    },
+    {
+        title: "Classic Chocolate Cookie",
+        description: "Our OG-crisp on the edges, gooey in the middle, and packed with melty chocolate. It’s a chocolate lover’s dream in every bite.",
+        price: 350,
+        image: "/classicchocolate.png",
+        bgColor: "#FFD59A"
     },
     {
         title: "Double Chocolate Cookie",
