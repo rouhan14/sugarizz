@@ -14,6 +14,13 @@ const data = [
         bgColor: "#F5E427"
     },
     {
+        title: "Lotus Cookie",
+        description: "A thick, golden-brown cookie packed with creamy white chocolate chunks and swirls of Lotus spread that melt into the center for a warm, gooey bite.",
+        price: 400,
+        image: "/lotus.png",
+        bgColor: "#FAF9F6"
+    },
+    {
         title: "Classic Chocolate Cookie",
         description: "Our OG-crisp on the edges, gooey in the middle, and packed with melty chocolate. It’s a chocolate lover’s dream in every bite.",
         price: 350,
