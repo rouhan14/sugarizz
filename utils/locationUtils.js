@@ -1,23 +1,10 @@
-// utils/locationUtils.js
+// utils/locationUtils.js - Updated to use Distance Matrix API
 
 /**
- * Calculate distance between two coordinates using Haversine formula
+ * Calculate road distance and delivery details using Google Distance Matrix API
+ * This replaces the old Haversine calculation with actual road distance
  */
-export function calculateDistance(lat1, lon1, lat2, lon2) {
-  const toRad = val => (val * Math.PI) / 180;
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = 
-    Math.sin(dLat / 2) ** 2 + 
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-/**
- * Geocode an address or reverse geocode coordinates using server-side API
- */
-export async function geocodeAddress(address = null, lat = null, lng = null) {
+export async function calculateDistanceAndDelivery(address = null, lat = null, lng = null, needsReverseGeocode = false) {
   try {
     if (!address && (!lat || !lng)) {
       throw new Error("Either address or coordinates must be provided");
@@ -28,7 +15,12 @@ export async function geocodeAddress(address = null, lat = null, lng = null) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ address, lat, lng }),
+      body: JSON.stringify({ 
+        address, 
+        lat, 
+        lng, 
+        needsReverseGeocode 
+      }),
     });
 
     const data = await response.json();
@@ -36,26 +28,64 @@ export async function geocodeAddress(address = null, lat = null, lng = null) {
     if (!response.ok) {
       return {
         success: false,
-        message: data.message || "Unable to geocode address"
+        message: data.message || "Unable to calculate distance"
       };
     }
 
-    if (address) {
-      // Return geocoded coordinates and formatted address for forward geocoding
-      return data;
-    } else {
-      // Return formatted address for reverse geocoding
-      return data.address;
-    }
+    return {
+      success: true,
+      distance: data.distance, // { text, value, km }
+      duration: data.duration, // { text, value, minutes }
+      coordinates: data.coordinates, // { lat, lng }
+      address: data.address, // formatted address
+      storeLocation: data.storeLocation
+    };
+    
   } catch (error) {
-    console.error("Geocoding error:", error);
+    console.error("Distance calculation error:", error);
+    return {
+      success: false,
+      message: "Unable to calculate distance. Please check your internet connection and try again."
+    };
+  }
+}
+
+/**
+ * Legacy function for backward compatibility - now uses Distance Matrix API
+ * @deprecated Use calculateDistanceAndDelivery instead
+ */
+export async function geocodeAddress(address = null, lat = null, lng = null) {
+  const result = await calculateDistanceAndDelivery(address, lat, lng, !address);
+  
+  if (!result.success) {
     if (address) {
-      return {
-        success: false,
-        message: "Unable to verify address. Please check your internet connection and try again."
-      };
+      return result;
     } else {
-      throw error;
+      throw new Error(result.message);
     }
   }
+  
+  if (address) {
+    // Return format expected by address-based calls
+    return {
+      success: true,
+      lat: result.coordinates?.lat,
+      lng: result.coordinates?.lng,
+      address: result.address,
+      distance: result.distance,
+      duration: result.duration
+    };
+  } else {
+    // Return format expected by coordinate-based calls (reverse geocoding)
+    return result.address;
+  }
+}
+
+/**
+ * @deprecated This function is no longer needed as we use Google's road distance
+ * Keeping for backward compatibility, but it will return 0
+ */
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  console.warn('calculateDistance is deprecated. Use calculateDistanceAndDelivery instead.');
+  return 0;
 }

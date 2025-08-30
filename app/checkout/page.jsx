@@ -8,7 +8,7 @@ import ErrorModal from "@/components/errorModal";
 import LocationService from "@/components/locationService";
 import AddressForm from "@/components/checkout/addressForm";
 import OrderSummary from "@/components/orderSummary";
-import { geocodeAddress } from "@/utils/locationUtils";
+import { calculateDistanceAndDelivery } from "@/utils/locationUtils";
 import PaymentMethod from "@/components/checkout/PaymentMethod";
 import { useMemo } from "react";
 import { calculateVoucherDiscount } from "@/utils/voucherUtils";
@@ -16,12 +16,12 @@ import { calculateVoucherDiscount } from "@/utils/voucherUtils";
 import OrderingStatus from "@/components/checkout/OrderingStatus";
 import CustomerInfo from "@/components/checkout/CustomerInfo";
 import OrderSummaryExtras from "@/components/checkout/OrderSummaryExtras";
-import CircleZoneChecker from "@/utils/circleDelivery";
+import DistanceZoneChecker from "@/utils/distanceDelivery";
 
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
 const MINIMUM_ORDER_AMOUNT = 1000; // Minimum order amount in Rs.
-const ORDERING_START_HOUR = 12; // 12 PM in 24-hour format
+const ORDERING_START_HOUR = 0; // 12 PM in 24-hour format
 const ORDERING_END_HOUR = 23; // 11 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
 
@@ -34,6 +34,7 @@ const Checkout = () => {
 
   // Delivery states
   const [deliveryDetails, setDeliveryDetails] = useState(null);
+  const [deliveryDetailsFromAddress, setDeliveryDetailsFromAddress] = useState(false);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -166,13 +167,14 @@ const Checkout = () => {
     setIsModalOpen(true);
   };
 
-  const handleLocationSuccess = (position) => {
+  const handleLocationSuccess = async (position) => {
     const { latitude, longitude } = position.coords;
     setCurrentLocation({ lat: latitude, lng: longitude });
 
-    // Reverse geocode to get address
-    reverseGeocode(latitude, longitude);
+    // Process GPS location with single API call (like address input)
+    await processGPSLocation(latitude, longitude);
     setLocationFetchedViaGPS(true);
+    setDeliveryDetailsFromAddress(true); // Prevent DistanceZoneChecker from running
   };
 
   const handleLocationError = () => {
@@ -187,10 +189,42 @@ const Checkout = () => {
     }
   };
 
+  const processGPSLocation = async (lat, lng) => {
+    try {
+      // Single API call to get distance, duration, and address for GPS location
+      const result = await calculateDistanceAndDelivery(null, lat, lng, true);
+      if (result.success) {
+        setResolvedAddress(result.address);
+        
+        // Directly calculate delivery zone from the distance result (same as address input)
+        const { getDeliveryDetails } = await import('@/utils/getDeliveryDetails');
+        const roadDistanceKm = result.distance.km;
+        const deliveryZone = getDeliveryDetails(roadDistanceKm);
+        
+        if (deliveryZone) {
+          setDeliveryDetails({
+            ...deliveryZone,
+            distanceFromStore: roadDistanceKm,
+            duration: result.duration,
+            coordinates: result.coordinates,
+            resolvedAddress: result.address
+          });
+        } else {
+          setDeliveryDetails(null);
+        }
+      }
+    } catch (error) {
+      console.error("GPS location processing failed:", error);
+    }
+  };
+
+  // Legacy function - now unused but kept for compatibility
   const reverseGeocode = async (lat, lng) => {
     try {
-      const address = await geocodeAddress(null, lat, lng);
-      setResolvedAddress(address);
+      const result = await calculateDistanceAndDelivery(null, lat, lng, true);
+      if (result.success) {
+        setResolvedAddress(result.address);
+      }
     } catch (error) {
       console.error("Reverse geocoding failed:", error);
     }
@@ -204,15 +238,35 @@ const Checkout = () => {
 
     setIsProcessing(true);
     try {
-      const result = await geocodeAddress(userInputAddress);
+      const result = await calculateDistanceAndDelivery(userInputAddress);
       if (result.success) {
-        setCurrentLocation({ lat: result.lat, lng: result.lng });
+        setCurrentLocation({ lat: result.coordinates.lat, lng: result.coordinates.lng });
         setResolvedAddress(result.address);
+        
+        // Directly calculate delivery zone from the distance result to avoid duplicate API calls
+        const { getDeliveryDetails } = await import('@/utils/getDeliveryDetails');
+        const roadDistanceKm = result.distance.km;
+        const deliveryZone = getDeliveryDetails(roadDistanceKm);
+        
+        if (deliveryZone) {
+          setDeliveryDetails({
+            ...deliveryZone,
+            distanceFromStore: roadDistanceKm,
+            duration: result.duration,
+            coordinates: result.coordinates,
+            resolvedAddress: result.address
+          });
+        } else {
+          setDeliveryDetails(null);
+        }
+        
+        // Mark that delivery details came from address, not GPS
+        setDeliveryDetailsFromAddress(true);
       } else {
         showErrorModal("Address Not Found", result.message);
       }
     } catch (error) {
-      showErrorModal("Geocoding Error", "Something went wrong while checking your address.");
+      showErrorModal("Distance Calculation Error", "Something went wrong while checking your address.");
     } finally {
       setIsProcessing(false);
     }
@@ -234,9 +288,10 @@ const Checkout = () => {
 
   // 2. Also memoize the activePosition and showZoneChecker
   const activePosition = useMemo(() => currentLocation, [currentLocation]);
+  // Only show zone checker for GPS locations, not for address-based locations to avoid duplicate API calls
   const showZoneChecker = useMemo(() =>
-    activePosition && activePosition.lat && activePosition.lng,
-    [activePosition]
+    activePosition && activePosition.lat && activePosition.lng && !deliveryDetailsFromAddress,
+    [activePosition, deliveryDetailsFromAddress]
   );
 
   // 3. Move STORE_LOCATION outside the component or memoize it
@@ -360,14 +415,14 @@ const Checkout = () => {
         message={modalMessage}
       />
 
-      {/* Circle Zone Checker Component */}
+      {/* Distance Zone Checker Component */}
       {showZoneChecker && (
-        <CircleZoneChecker
+        <DistanceZoneChecker
           lat={activePosition.lat}
           lng={activePosition.lng}
-          storeLocation={STORE_LOCATION}
           onZoneFound={handleZoneFound}
           onZoneNotFound={handleZoneNotFound}
+          onProcessing={setIsProcessing}
         />
       )}
 

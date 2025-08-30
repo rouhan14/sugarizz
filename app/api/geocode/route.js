@@ -1,8 +1,14 @@
-// app/api/geocode/route.js
+// app/api/geocode/route.js - Now using Google Distance Matrix API
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; // Note: No NEXT_PUBLIC_ prefix for server-only
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+
+// Store location coordinates (Lahore)
+const STORE_LOCATION = {
+  lat: 31.3536,
+  lng: 74.2518
+};
 
 /**
  * Appends "Lahore" to an address if it's not already present
@@ -24,7 +30,7 @@ function appendLahoreToAddress(address) {
 
 export async function POST(request) {
   try {
-    console.log("🔍 Geocoding API called");
+    console.log("🚗 Distance Matrix API called");
     
     if (!GOOGLE_API_KEY) {
       console.log("❌ Google API key not configured");
@@ -35,20 +41,36 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { address, lat, lng } = body;
-    console.log("📍 Request data:", { address, lat, lng });
+    const { address, lat, lng, needsReverseGeocode } = body;
+    console.log("📍 Request data:", { address, lat, lng, needsReverseGeocode });
 
-    let url = `https://maps.googleapis.com/maps/api/geocode/json?key=${GOOGLE_API_KEY}`;
+    let customerLocation = "";
+    let formattedAddress = "";
     
-    if (address) {
-      // Forward geocoding - automatically append Lahore to the address
+    // Determine customer location format for Distance Matrix API
+    if (lat && lng) {
+      customerLocation = `${lat},${lng}`;
+      
+      // If we need reverse geocoding, get the formatted address
+      if (needsReverseGeocode) {
+        try {
+          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`;
+          const geocodeResponse = await axios.get(geocodeUrl);
+          
+          if (geocodeResponse.data.results && geocodeResponse.data.results.length > 0) {
+            formattedAddress = geocodeResponse.data.results[0].formatted_address;
+            console.log("🏠 Reverse geocoded address:", formattedAddress);
+          }
+        } catch (error) {
+          console.warn("⚠️ Reverse geocoding failed:", error.message);
+        }
+      }
+    } else if (address) {
+      // Use address directly, append Lahore if needed
       const addressWithLahore = appendLahoreToAddress(address);
-      url += `&address=${encodeURIComponent(addressWithLahore)}`;
-      console.log("🏠 Geocoding address:", addressWithLahore);
-    } else if (lat && lng) {
-      // Reverse geocoding
-      url += `&latlng=${lat},${lng}`;
-      console.log("🌍 Reverse geocoding coordinates:", lat, lng);
+      customerLocation = encodeURIComponent(addressWithLahore);
+      formattedAddress = addressWithLahore;
+      console.log("🏠 Using address:", addressWithLahore);
     } else {
       console.log("❌ No address or coordinates provided");
       return NextResponse.json(
@@ -57,27 +79,28 @@ export async function POST(request) {
       );
     }
 
-    console.log("🌐 Making request to Google API...");
-    const response = await axios.get(url);
-    console.log("📊 Google API response status:", response.data.status);
-    console.log("📊 Google API results count:", response.data.results?.length || 0);
-    
-    const results = response.data.results;
+    // Build Distance Matrix API URL
+    const storeLocationStr = `${STORE_LOCATION.lat},${STORE_LOCATION.lng}`;
+    const distanceMatrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${storeLocationStr}&destinations=${customerLocation}&key=${GOOGLE_API_KEY}&units=metric&mode=driving&avoid=tolls`;
 
-    if (!results || results.length === 0) {
-      console.log("❌ No results found from Google API");
-      console.log("📊 Google API status:", response.data.status);
-      console.log("📊 Google API error message:", response.data.error_message);
-      console.log("📊 Full Google API response:", JSON.stringify(response.data, null, 2));
+    console.log("🌐 Making request to Distance Matrix API...");
+    const response = await axios.get(distanceMatrixUrl);
+    console.log("📊 Distance Matrix API response status:", response.data.status);
+    
+    const { rows } = response.data;
+
+    if (!rows || rows.length === 0 || !rows[0].elements || rows[0].elements.length === 0) {
+      console.log("❌ No results found from Distance Matrix API");
+      console.log("📊 API status:", response.data.status);
+      console.log("📊 API error message:", response.data.error_message);
       
-      // Return more specific error message based on Google API status
-      let errorMessage = "Address not found. Please try a different address.";
+      let errorMessage = "Unable to calculate distance to your location. Please try a different address.";
       if (response.data.status === 'REQUEST_DENIED') {
-        errorMessage = "Geocoding service unavailable. Please ensure the Geocoding API is enabled in Google Cloud Console.";
+        errorMessage = "Distance calculation service unavailable. Please ensure the Distance Matrix API is enabled.";
       } else if (response.data.status === 'OVER_QUERY_LIMIT') {
         errorMessage = "Service temporarily unavailable. Please try again later.";
       } else if (response.data.status === 'ZERO_RESULTS') {
-        errorMessage = "Address not found. Please try a more specific address.";
+        errorMessage = "No route found to your location. Please try a more specific address.";
       } else if (response.data.status === 'INVALID_REQUEST') {
         errorMessage = "Invalid address format. Please check your address.";
       }
@@ -85,36 +108,86 @@ export async function POST(request) {
       return NextResponse.json({
         success: false,
         message: errorMessage,
-        debug: response.data.status // Add debug info
+        debug: response.data.status
       });
     }
 
-    console.log("✅ Address found successfully");
-    const result = results[0];
-    const location = result.geometry.location;
-
-    if (address) {
-      // Return geocoded coordinates and formatted address
+    const element = rows[0].elements[0];
+    
+    if (element.status !== 'OK') {
+      console.log("❌ Distance calculation failed:", element.status);
+      
+      let errorMessage = "Unable to calculate route to your location.";
+      if (element.status === 'NOT_FOUND') {
+        errorMessage = "Location not found. Please provide a more specific address.";
+      } else if (element.status === 'ZERO_RESULTS') {
+        errorMessage = "No driving route available to your location.";
+      }
+      
       return NextResponse.json({
-        success: true,
-        lat: location.lat,
-        lng: location.lng,
-        address: result.formatted_address
-      });
-    } else {
-      // Return formatted address for reverse geocoding
-      return NextResponse.json({
-        success: true,
-        address: result.formatted_address
+        success: false,
+        message: errorMessage,
+        debug: element.status
       });
     }
+
+    console.log("✅ Distance calculated successfully");
+    
+    // Extract distance and duration
+    const distanceInMeters = element.distance.value;
+    const distanceInKm = distanceInMeters / 1000;
+    const durationInSeconds = element.duration.value;
+    const durationInMinutes = Math.round(durationInSeconds / 60);
+    
+    console.log(`📏 Distance: ${distanceInKm.toFixed(2)} km, Duration: ${durationInMinutes} minutes`);
+
+    // Get customer coordinates if we used address input
+    let customerCoordinates = null;
+    if (lat && lng) {
+      customerCoordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
+    } else if (address) {
+      // We need to geocode the address to get coordinates for the response
+      try {
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formattedAddress)}&key=${GOOGLE_API_KEY}`;
+        const geocodeResponse = await axios.get(geocodeUrl);
+        
+        if (geocodeResponse.data.results && geocodeResponse.data.results.length > 0) {
+          const location = geocodeResponse.data.results[0].geometry.location;
+          customerCoordinates = { lat: location.lat, lng: location.lng };
+          // Update formatted address with geocoded result if we don't have one
+          if (!formattedAddress) {
+            formattedAddress = geocodeResponse.data.results[0].formatted_address;
+          }
+        }
+      } catch (error) {
+        console.warn("⚠️ Geocoding for coordinates failed:", error.message);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      distance: {
+        text: element.distance.text,
+        value: distanceInMeters,
+        km: parseFloat(distanceInKm.toFixed(2))
+      },
+      duration: {
+        text: element.duration.text,
+        value: durationInSeconds,
+        minutes: durationInMinutes
+      },
+      coordinates: customerCoordinates,
+      address: formattedAddress || address,
+      storeLocation: STORE_LOCATION
+    });
+    
   } catch (error) {
-    console.error("❌ Geocoding error:", error);
+    console.error("❌ Distance Matrix API error:", error);
     console.error("❌ Error details:", error.response?.data || error.message);
     return NextResponse.json(
       { 
         success: false, 
-        message: "Unable to verify address. Please check your internet connection and try again." 
+        message: "Unable to calculate distance. Please check your internet connection and try again." 
       },
       { status: 500 }
     );
