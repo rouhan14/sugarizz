@@ -21,7 +21,7 @@ import DistanceZoneChecker from "@/utils/distanceDelivery";
 // Constants
 const STORE_LOCATION = { lat: 31.3536, lng: 74.2518 };
 const MINIMUM_ORDER_AMOUNT = 1000; // Minimum order amount in Rs.
-const ORDERING_START_HOUR = 0; // 12 PM in 24-hour format
+const ORDERING_START_HOUR = 12; // 12 PM in 24-hour format
 const ORDERING_END_HOUR = 23; // 11 PM in 24-hour format
 const PAKISTAN_TIMEZONE = 'Asia/Karachi';
 
