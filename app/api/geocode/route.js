@@ -6,8 +6,8 @@ const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
 // Store location coordinates (Lahore)
 const STORE_LOCATION = {
-  lat: 31.3536,
-  lng: 74.2518
+  lat: 31.3673,
+  lng: 74.2588
 };
 
 /**
