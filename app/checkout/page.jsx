@@ -240,8 +240,11 @@ const Checkout = () => {
     try {
       const result = await calculateDistanceAndDelivery(userInputAddress);
       if (result.success) {
-        setCurrentLocation({ lat: result.coordinates.lat, lng: result.coordinates.lng });
-        setResolvedAddress(result.address);
+        // setCurrentLocation({ lat: result.coordinates.lat, lng: result.coordinates.lng });
+        // setResolvedAddress(result.address);
+
+        setCurrentLocation(result.customer);
+        setResolvedAddress(result.customer);
         
         // Directly calculate delivery zone from the distance result to avoid duplicate API calls
         const { getDeliveryDetails } = await import('@/utils/getDeliveryDetails');
