@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useCookieStore from "@/store/cookieStore";
+import { useCookieStock } from "@/hooks/useCookieStock";
 import data from "@/data";
 import ErrorModal from "@/components/errorModal";
 import LocationService from "@/components/locationService";
@@ -54,6 +55,7 @@ const Checkout = () => {
 
   const router = useRouter();
   const { quantities, resetQuantities } = useCookieStore();
+  const { isOutOfStock: checkIsOutOfStock, loading: stockLoading } = useCookieStock();
 
   // Payment Method State
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -329,6 +331,17 @@ const Checkout = () => {
 
     if (!userInputAddress.trim()) {
       showErrorModal("Address Required", "Please enter your delivery address.");
+      return;
+    }
+
+    // Check for out of stock items in cart
+    const outOfStockItems = cartItems.filter(item => checkIsOutOfStock(item.title));
+    if (outOfStockItems.length > 0) {
+      const outOfStockNames = outOfStockItems.map(item => item.name).join(", ");
+      showErrorModal(
+        "Items Out of Stock",
+        `The following items in your cart are currently out of stock: ${outOfStockNames}. Please remove them from your cart to continue.`
+      );
       return;
     }
 

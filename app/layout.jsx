@@ -3,6 +3,7 @@ import { IoWarning } from "react-icons/io5";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { CookieStockProvider } from "@/contexts/CookieStockContext";
 import Script from "next/script";
 
 const geistSans = Geist({
@@ -107,9 +108,11 @@ export default function RootLayout({ children }) {
           </div>
         </div>
 
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <CookieStockProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </CookieStockProvider>
       </body>
     </html>
   );

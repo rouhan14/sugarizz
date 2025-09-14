@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import useCookieStore from "@/store/cookieStore";
+import { useCookieStock } from "@/hooks/useCookieStock";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 
 export default function CookieHero({
@@ -19,10 +20,11 @@ export default function CookieHero({
     const [isDesktop, setIsDesktop] = useState(false);
 
     const { quantities, increase, decrease } = useCookieStore();
+    const { isOutOfStock: checkIsOutOfStock, loading: stockLoading } = useCookieStock();
     const quantity = quantities[title] || 0;
     
-    // Check if this cookie is out of stock
-    const isOutOfStock = title === "value";
+    // Check if this cookie is out of stock from database
+    const isOutOfStock = checkIsOutOfStock(title);
 
     useEffect(() => {
         const handleResize = () => {
