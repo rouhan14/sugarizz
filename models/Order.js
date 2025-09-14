@@ -15,7 +15,7 @@ const VoucherSchema = new mongoose.Schema({
 });
 
 const OrderSchema = new mongoose.Schema({
-  orderId: { type: Number, required: true, unique: true }, // 1001, 1002, ...
+  orderId: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
   email: { type: String },
   phoneNumber: { type: String, required: true },

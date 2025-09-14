@@ -36,8 +36,8 @@ export async function POST(request) {
     const cookieQuantities = calculateCookieQuantities(orderData.cookies);
     const materialPackagingCost = calculateMaterialCost(cookieQuantities, costPrices);
     
-    // Initial calculations (can be updated later by admin)
-    const riderPayment = 0; // Will be updated by admin
+    // Calculate rider payment: deliveryCharges + 150
+    const riderPayment = (orderData.deliveryCharges || 0) + 150;
     const revenue = orderData.totalPrice - riderPayment;
     const grossProfit = revenue - materialPackagingCost;
 
