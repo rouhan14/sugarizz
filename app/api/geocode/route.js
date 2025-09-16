@@ -7,6 +7,36 @@ const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 // Store location (you can use either coords OR address string)
 const STORE_LOCATION = "31.3673,74.2588"; // or "Lake City, Lahore"
 
+/**
+ * Preprocesses addresses for better geocoding with Google Maps API
+ * - Converts "lhr" abbreviation to "Lahore"
+ * - Automatically adds "Lahore" if no city is specified
+ * @param {string} address - The raw address string
+ * @returns {string} - The processed address string
+ */
+function preprocessAddress(address) {
+  if (!address || typeof address !== 'string') {
+    return address;
+  }
+
+  let processedAddress = address.trim();
+  
+  // Convert "lhr" to "Lahore" (case insensitive)
+  processedAddress = processedAddress.replace(/\blhr\b/gi, 'Lahore');
+  
+  // Check if "Lahore" is already mentioned in the address (case insensitive)
+  const hasLahore = /lahore/i.test(processedAddress);
+  
+  // If Lahore is not mentioned, append it to the address
+  if (!hasLahore) {
+    processedAddress = `${processedAddress}, Lahore`;
+  }
+  
+  console.log(`📍 Address preprocessing: "${address}" → "${processedAddress}"`);
+  
+  return processedAddress;
+}
+
 export async function POST(request) {
   try {
     console.log("🚗 Distance Matrix API called");
@@ -28,8 +58,8 @@ export async function POST(request) {
       // Use coordinates directly
       customerLocation = `${lat},${lng}`;
     } else if (address) {
-      // Use address directly (no encoding here, API will handle spaces/commas fine)
-      customerLocation = address;
+      // Preprocess address for better Lahore geocoding
+      customerLocation = preprocessAddress(address);
     } else {
       return NextResponse.json(
         { success: false, message: "Either address or coordinates must be provided" },
@@ -81,7 +111,7 @@ export async function POST(request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to calculate distance. Please check your input or API key."
+        message: "Unable to calculate distance. Please check your input." // API KEY ERROR PROBABLY
       },
       { status: 500 }
     );
